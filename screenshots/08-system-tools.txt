@@ -6,13 +6,13 @@
 │cache          : /var/cache/pacman/pkg/                    ││  Reload package data                          re-read databases     │
 │AUR helper     : yay                                       ││  Clear cached AUR package list                force refresh         │
 │root           : no                                        ││                                                                     │
-│AUR list cache : /home/lycoris/ppm-rs/.ppm-cache/aur-packag││download fresh sync databases with pacman -Sy                        │
+│AUR list cache : /home/lycoris/.cache/ppm/aur-packages.gz  ││download fresh sync databases with pacman -Sy                        │
 │downloads      : /home/lycoris/ppm-rs/downloads            ││                                                                     │
 │                                                           ││                                                                     │
-│packages       : 143 402                                   ││                                                                     │
-│installed      : 1 423                                     ││                                                                     │
-│updates        : 545                                       ││                                                                     │
-│cache size     : 9.1 GiB                                   ││                                                                     │
+│packages       : 143 407                                   ││                                                                     │
+│installed      : 1 430                                     ││                                                                     │
+│updates        : 1                                         ││                                                                     │
+│cache size     : 12.8 GiB                                  ││                                                                     │
 │                                                           ││                                                                     │
 │                                                           ││                                                                     │
 │                                                           ││                                                                     │
@@ -37,4 +37,4 @@
 │                                                           ││                                                                     │
 ╰───────────────────────────────────────────────────────────╯╰─────────────────────────────────────────────────────────────────────╯
  ↑↓ choose   Enter run action   Esc back
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB

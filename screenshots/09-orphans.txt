@@ -1,6 +1,4 @@
- CLEAN ORPHANS  0 orphaned package(s)
-
-
+ CLEAN ORPHANS  4 orphaned package(s)
 
 
 
@@ -16,8 +14,11 @@
 
 
 ╭ ORPHANS ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│No orphaned packages — the system is clean.                                                                                       │
+│Packages nothing depends on. Removing them frees disk space:                                                                      │
 │                                                                                                                                  │
+│  ● lua54                                                                                                                         │
+│  ● openbsd-netcat                                                                                                                │
+│  … and 2 more                                                                                                                    │
 │                                                                                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
@@ -35,6 +36,5 @@
 
 
 
-
  Enter remove all orphans   r rescan   Esc back
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB

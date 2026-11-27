@@ -186,12 +186,12 @@ fn draw_menu(frame: &mut Frame, app: &mut App, area: Rect) {
             let marker = match item {
                 MenuItem::Install => "+",
                 MenuItem::Remove => "-",
-                MenuItem::Update => "↑",
-                MenuItem::Downgrade => "↓",
-                MenuItem::CleanOrphans => "×",
-                MenuItem::CleanCache => "▤",
-                MenuItem::SystemTools => "☰",
-                MenuItem::Exit => "→",
+                MenuItem::Update => "▴",
+                MenuItem::Downgrade => "▾",
+                MenuItem::CleanOrphans => "x",
+                MenuItem::CleanCache => "◫",
+                MenuItem::SystemTools => "⌂",
+                MenuItem::Exit => "⏻",
             };
             ListItem::new(Line::from(vec![
                 Span::styled(

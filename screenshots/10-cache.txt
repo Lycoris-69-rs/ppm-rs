@@ -1,4 +1,4 @@
- CLEAN PACKAGE CACHE  9.1 GiB in 1 577 tarballs
+ CLEAN PACKAGE CACHE  12.8 GiB in 2 110 tarballs
 
 
 
@@ -13,8 +13,8 @@
 
 
 ╭ PACMAN CACHE ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│Cache size    : 9.1 GiB                                                                                                           │
-│Cached files  : 1 577                                                                                                             │
+│Cache size    : 12.8 GiB                                                                                                          │
+│Cached files  : 2 110                                                                                                             │
 │Location      : /var/cache/pacman/pkg/                                                                                            │
 │                                                                                                                                  │
 │Cleaning removes cached tarballs of packages that are no longer installed.                                                        │
@@ -37,4 +37,4 @@
 
 
  Enter clean cache   r rescan   Esc back
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB

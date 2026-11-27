@@ -1,4 +1,4 @@
-  INSTALL PACKAGES 31 749 shown / 143 402 total
+  INSTALL PACKAGES 31 749 shown / 143 407 total
   > git▏                                                                                                             31 749 matches
 ──────────────╔ HELP ════════════════════════════════════════════════════════════════════════════════════════════════╗──────────────
 ╭ PACKAGES · 3║ PPM · Powerful Package Manager                                                                       ║─────────────╮
@@ -37,4 +37,4 @@
 │  git-barber ║                                                                                                      ║             │
 ╰─────────────╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝─────────────╯
  Enter install   ^D download   Space mark   ↑↓ move   Type search   Esc back   F1 help
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB

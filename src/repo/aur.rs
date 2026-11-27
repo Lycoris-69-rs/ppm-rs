@@ -20,7 +20,7 @@ pub const RPC_BATCH: usize = 50;
 
 pub fn client() -> Result<reqwest::Client, String> {
     reqwest::Client::builder()
-        .user_agent(concat!("ppm/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("ppm-rs/", env!("CARGO_PKG_VERSION")))
         .timeout(Duration::from_secs(45))
         .connect_timeout(Duration::from_secs(10))
         .build()

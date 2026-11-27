@@ -1,40 +1,40 @@
-  UPDATE PACKAGES 545 shown / 545 total
+  UPDATE PACKAGES 1 shown / 1 total
   > Search available updates▏
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-╭ PACKAGES · 545 ────────────────────────────────────────────────────────────────╮╭ PACKAGE INFORMATION ───────────────────────────╮
-│ PACKAGE                                                    VERSION      STATE  ┃│ ● UPGRADE AVAILABLE                            │
-│▸ 7zip                                                    26.06-1.1    upgrade  ┃│                                                │
-│  ada                                                     4.1.1-1.1    upgrade  ││Package Information                             │
-│  alsa-card-profiles                                     1:1.6.12-1    upgrade  ││Update  26.04-1.1 → 26.06-1.1                   │
-│  aom                                                    3.15.3-1.1    upgrade  ││Name          : 7zip                            │
-│  appstream                                               1.2.3-1.1    upgrade  ││Version       : 26.06-1                         │
-│  at-spi2-core                                           2.62.2-1.1    upgrade  ││Installed     : 26.04-1.1                       │
-│  attica                                                 6.32.0-1.1    upgrade  ││Source        : pacman repositories             │
-│  automake                                                   1.20-1    upgrade  ││                                                │
-│  ayugram-desktop                                           7.2.9-4    upgrade  ││File archiver for extremely high compression    │
-│  baloo                                                  6.32.0-1.1    upgrade  ││                                                │
-│  baloo-widgets                                         26.08.3-1.1    upgrade  ││Download size : 2023.31 KiB                     │
-│  bind                                                  9.20.31-1.1    upgrade  ││Installed size: 6600.37 KiB                     │
-│  bluez                                                    5.88-1.1    upgrade  ││Upstream      : https://www.7-zip.org           │
-│  bluez-hid2hci                                            5.88-1.1    upgrade  ││Licenses      : LGPL-2.1-or-later AND           │
-│  bluez-libs                                               5.88-1.1    upgrade  ││                LicenseRef-UnRAR AND…           │
-│  bluez-obex                                               5.88-1.1    upgrade  ││Depends on    : sh · libgcc · libstdc++ · glibc │
-│  bluez-utils                                              5.88-1.1    upgrade  ││Conflicts     : p7zip                           │
-│  boost-libs                                             1.92.0-2.1    upgrade  ││Provides      : p7zip                           │
-│  bpf                                                       7.3.6-1    upgrade  ││Packager      : George Rawlinson…               │
-│  breeze-icons                                           6.32.0-1.1    upgrade  ││Build date    : Sun Nov  8 09:03:58 2026        │
-│  brotli                                                  1.2.1-1.1    upgrade  ││                                                │
-│  btop                                                    1.4.8-1.1    upgrade  ││                                                │
-│  btrfs-progs                                                 7.3-1    upgrade  ││                                                │
-│  c-ares                                                 1.34.9-1.1    upgrade  ││                                                │
-│  ca-certificates-mozilla                                 3.134-1.1    upgrade  ││                                                │
-│  cachyos-ananicy-rules                                  1:1.1.50-1    upgrade  ││                                                │
-│  cachyos-hello                                            0.28.1-2    upgrade  ││                                                │
-│  cachyos-hooks                                        2026.10.23-1    upgrade  ││                                                │
-│  cachyos-packageinstaller                                  2.0.2-1    upgrade  ││                                                │
-│  cachyos-rate-mirrors                                         27-1    upgrade  ││                                                │
-│  cachyos-settings                                        1:1.4.5-1    upgrade  ││                                                │
-│  cava                                                    1.0.0-2.1    upgrade  ││                                                │
+╭ PACKAGES · 1 ──────────────────────────────────────────────────────────────────╮╭ PACKAGE INFORMATION ───────────────────────────╮
+│ PACKAGE                                                    VERSION      STATE  ││ ● UPGRADE AVAILABLE                            │
+│▸ flex                                                    2.7.9-1.1    upgrade  ││                                                │
+│                                                                                ││Package Information                             │
+│                                                                                ││Update  2.7.6-1.1 → 2.7.9-1.1                   │
+│                                                                                ││Name          : flex                            │
+│                                                                                ││Version       : 2.7.9-1                         │
+│                                                                                ││Installed     : 2.7.6-1.1                       │
+│                                                                                ││Source        : pacman repositories             │
+│                                                                                ││                                                │
+│                                                                                ││A tool for generating text-scanning programs    │
+│                                                                                ││                                                │
+│                                                                                ││Download size : 370.73 KiB                      │
+│                                                                                ││Installed size: 1292.85 KiB                     │
+│                                                                                ││Upstream      : https://github.com/westes/flex  │
+│                                                                                ││Licenses      : custom:flex                     │
+│                                                                                ││Depends on    : glibc · m4 · sh                 │
+│                                                                                ││Packager      : Lukas Fleischer…                │
+│                                                                                ││Build date    : Thu Nov 26 01:03:56 2026        │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
+│                                                                                ││                                                │
 ╰────────────────────────────────────────────────────────────────────────────────╯╰────────────────────────────────────────────────╯
  Enter upgrade   ^D download   Space mark   ↑↓ move   Type search   Esc back   F1 help
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB

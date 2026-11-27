@@ -1,8 +1,8 @@
 
   ██████  ██████  ██    ██  Powerful Package Manager
   ██  ██  ██  ██  ███  ███  pacman + AUR · every repository merged into one flat list
-  ██████  ██████  ██ ██ ██  143 402 packages available
-  ██      ██      ██    ██  1 423 installed  ·  545 updates
+  ██████  ██████  ██ ██ ██  143 407 packages available
+  ██      ██      ██    ██  1 430 installed  ·  1 updates
   ██      ██      ██    ██  downloads: /home/lycoris/ppm-rs/downloads
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -10,12 +10,12 @@
   MAIN MENU                                                               │pacman            Pacman v7.1.0                         │
  ▸ +  Install Packages      browse, download and install packages         │AUR helper        yay                                   │
    -  Remove Packages       uninstall packages and their dependencies     │running as root   no                                    │
-   ↑  Update Packages       review and apply available upgrades           │                                                        │
-   ↓  Downgrade Packages    restore an older version from the cache       │package cache     9.1 GiB                               │
-   ×  Clean Orphans         remove packages nothing depends on            │cached versions   1 577                                 │
-   ▤  Clean Package Cache   delete cached package tarballs                │AUR list          127 362 packages                      │
-   ☰  System Tools          pacman diagnostics and maintenance            │                                                        │
-   →  Exit                  leave PPM                                     │TIP                                                     │
+   ▴  Update Packages       review and apply available upgrades           │                                                        │
+   ▾  Downgrade Packages    restore an older version from the cache       │package cache     12.8 GiB                              │
+   x  Clean Orphans         remove packages nothing depends on            │cached versions   2 110                                 │
+   ◫  Clean Package Cache   delete cached package tarballs                │AUR list          127 366 packages                      │
+   ⌂  System Tools          pacman diagnostics and maintenance            │                                                        │
+   ⏻  Exit                  leave PPM                                     │TIP                                                     │
                                                                           │Install opens the flat package browser: type to search, │
                                                                           │Enter to install, Ctrl+D to only download.              │
                                                                           │                                                        │
@@ -37,4 +37,4 @@
                                                                           │                                                        │
                                                                           ╰────────────────────────────────────────────────────────╯
  ↑↓ move   Enter select   R reload   ? help   q quit
- pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB                   143 402 packages in one list
+ pacman 16 608  ·  AUR 127 366  ·  installed 1 430  ·  updates 1  ·  cache 12.8 GiB                    143 407 packages in one list
