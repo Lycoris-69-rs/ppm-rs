@@ -14,3 +14,7 @@
 # Python bytecode (test scripts)
 __pycache__/
 *.pyc
+
+# Local-only developer helpers (kept out of the published repository)
+/howitmaylooks
+/scripts/

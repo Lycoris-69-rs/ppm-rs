@@ -152,14 +152,8 @@ interactive question; confirmations are asked by PPM itself.
 ```bash
 cargo test                 # 23 unit tests: parsers, vercmp vs the system vercmp, filtering, app state
 cargo clippy --all-targets # clean
-python3 scripts/pty-smoke.py                     # end-to-end in a real PTY
-./scripts/render-screenshots.sh screenshots      # PNG from snapshot mode (headless Chromium)
+cargo fmt --check          # formatting
 ```
-
-`scripts/pty-smoke.py` boots the real TUI in a pty, emulates the screen and
-verifies: main menu → browser → metadata → install dialog (cancelled) → a real
-`cowsay` download through `Ctrl+D` → back to the menu → AUR metadata loading →
-clean exit with code 0.
 
 ## Structure
 
@@ -182,9 +176,6 @@ src/
     info.rs       "Package Information" pane
     simple.rs     orphans / cache / system tools
     overlay.rs    confirm / operation console / help
-scripts/
-  pty-smoke.py            end-to-end check in a pseudo-terminal
-  render-screenshots.sh   html → png
 ```
 
 ## Limitations
