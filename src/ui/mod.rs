@@ -12,25 +12,14 @@ pub mod simple;
 
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Direction, Layout, Rect};
-use ratatui::style::{Color, Modifier, Style};
+use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, BorderType, Borders, Paragraph};
 
 use crate::app::{App, BrowseMode, Screen};
 
-// Every role resolves to the terminal default: no colours, no fills.
-pub const BG: Color = Color::Reset;
-pub const PANEL: Color = Color::Reset;
-pub const PANEL_HIGHLIGHT: Color = Color::Reset;
-pub const ACCENT: Color = Color::Reset;
-pub const ACCENT2: Color = Color::Reset;
-pub const FG: Color = Color::Reset;
-pub const DIM: Color = Color::Reset;
-pub const FAINT: Color = Color::Reset;
-pub const GREEN: Color = Color::Reset;
-pub const YELLOW: Color = Color::Reset;
-pub const RED: Color = Color::Reset;
-pub const BLUE: Color = Color::Reset;
+// PPM uses no palette: text is drawn with the terminal's default foreground on
+// its default background.  Emphasis is expressed with the bold/dim modifiers.
 
 /// Bold text — the only emphasis used by the interface.
 pub fn emphasis() -> Style {
@@ -56,10 +45,10 @@ pub fn panel_block(title: impl Into<Line<'static>>) -> Block<'static> {
     Block::default()
         .borders(Borders::ALL)
         .border_type(BorderType::Rounded)
-        .border_style(Style::default().fg(FAINT))
-        .style(Style::default().bg(PANEL))
+        .border_style(Style::default())
+        .style(Style::default())
         .title(title)
-        .title_style(Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD))
+        .title_style(Style::default().add_modifier(Modifier::BOLD))
 }
 
 pub fn dim_style() -> Style {
@@ -68,11 +57,8 @@ pub fn dim_style() -> Style {
 
 pub fn key_hint(key: &'static str, description: &'static str) -> Vec<Span<'static>> {
     vec![
-        Span::styled(
-            key,
-            Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
-        ),
-        Span::styled(format!(" {description}"), Style::default().fg(DIM)),
+        Span::styled(key, Style::default().add_modifier(Modifier::BOLD)),
+        Span::styled(format!(" {description}"), Style::default()),
         Span::styled("   ", Style::default()),
     ]
 }
@@ -92,7 +78,7 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
         let message = Paragraph::new(vec![
             Line::from(Span::styled(
                 "Terminal too small",
-                Style::default().fg(RED).add_modifier(Modifier::BOLD),
+                Style::default().add_modifier(Modifier::BOLD),
             )),
             Line::from(Span::styled(
                 "PPM needs at least 60x16 characters.",
@@ -140,12 +126,6 @@ pub fn draw_footer(
         .constraints([Constraint::Length(1), Constraint::Length(1)])
         .split(area);
 
-    let hints_area = Rect {
-        x: area.x + 1,
-        y: rows[0].y,
-        width: area.width.saturating_sub(2),
-        height: 1,
-    };
     frame.render_widget(
         Paragraph::new(hints).alignment(ratatui::layout::Alignment::Left),
         Rect {
@@ -154,37 +134,27 @@ pub fn draw_footer(
             ..area
         },
     );
-    let _ = hints_area;
 
     let left = status_summary(app);
     let right = app
         .toast
         .as_ref()
-        .map(|toast| (toast.text.clone(), if toast.error { RED } else { ACCENT }))
-        .or_else(|| extra_right.map(|text| (text, DIM)));
+        .map(|toast| toast.text.clone())
+        .or(extra_right);
 
-    let status_line = Line::from(vec![Span::styled(
-        format!(" {left}"),
-        Style::default().fg(DIM),
-    )]);
+    let status_line = Line::from(vec![Span::styled(format!(" {left}"), secondary())]);
     frame.render_widget(
-        Paragraph::new(status_line)
-            .style(Style::default().bg(PANEL))
-            .alignment(ratatui::layout::Alignment::Left),
+        Paragraph::new(status_line).alignment(ratatui::layout::Alignment::Left),
         Rect {
             y: rows[1].y,
             height: 1,
             ..area
         },
     );
-    if let Some((text, color)) = right {
+    if let Some(text) = right {
         frame.render_widget(
-            Paragraph::new(Line::from(Span::styled(
-                format!("{text} "),
-                Style::default().fg(color).add_modifier(Modifier::BOLD),
-            )))
-            .style(Style::default().bg(PANEL))
-            .alignment(ratatui::layout::Alignment::Right),
+            Paragraph::new(Line::from(Span::styled(format!("{text} "), emphasis())))
+                .alignment(ratatui::layout::Alignment::Right),
             Rect {
                 y: rows[1].y,
                 height: 1,
@@ -264,7 +234,9 @@ pub fn centered_rect(width_percent: u16, height_percent: u16, area: Rect) -> Rec
 /// Small colored tag used in lists and the info pane.
 pub fn source_tag(source: crate::model::Source) -> Span<'static> {
     match source {
-        crate::model::Source::Aur => Span::styled("aur", Style::default().fg(ACCENT2)),
+        crate::model::Source::Aur => {
+            Span::styled("aur", Style::default().add_modifier(Modifier::DIM))
+        }
         crate::model::Source::Pacman => Span::styled("   ", Style::default()),
     }
 }

@@ -8,10 +8,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{List, ListItem, ListState, Paragraph, Wrap};
 
 use crate::app::{App, MENU_ITEMS, MenuItem};
-use crate::ui::{
-    self, ACCENT, ACCENT2, BG, DIM, FAINT, FG, GREEN, PANEL, YELLOW, footer_hints, key_hint,
-    panel_block, spinner, thousands,
-};
+use crate::ui::{self, footer_hints, key_hint, panel_block, spinner, thousands};
 
 const BRAND: [&str; 5] = [
     "██████  ██████  ██    ██",
@@ -77,10 +74,7 @@ fn draw_brand(frame: &mut Frame, app: &App, area: Rect) {
         .iter()
         .map(|line| Line::from(Span::styled(*line, Style::default())))
         .collect();
-    frame.render_widget(
-        Paragraph::new(art_lines).style(Style::default().bg(BG)),
-        art_area,
-    );
+    frame.render_widget(Paragraph::new(art_lines).style(Style::default()), art_area);
 
     let text_area = Rect {
         x: area.x + 28,
@@ -91,43 +85,37 @@ fn draw_brand(frame: &mut Frame, app: &App, area: Rect) {
     let lines = vec![
         Line::from(Span::styled(
             "Powerful Package Manager",
-            Style::default().fg(FG).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("pacman + AUR", Style::default().fg(ACCENT)),
+            Span::styled("pacman + AUR", Style::default()),
             Span::styled(
                 " · every repository merged into one flat list",
-                Style::default().fg(DIM),
+                Style::default(),
             ),
         ]),
         Line::from(vec![
             Span::styled(
                 thousands(app.data.package_count()),
-                Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
+                Style::default().add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" packages available", Style::default().fg(FG)),
+            Span::styled(" packages available", Style::default()),
         ]),
         Line::from(vec![
-            Span::styled(
-                thousands(app.data.installed_count()),
-                Style::default().fg(GREEN),
-            ),
-            Span::styled(" installed", Style::default().fg(DIM)),
-            Span::styled("  ·  ", Style::default().fg(FAINT)),
-            Span::styled(
-                thousands(app.data.updates.len()),
-                Style::default().fg(YELLOW),
-            ),
-            Span::styled(" updates", Style::default().fg(DIM)),
+            Span::styled(thousands(app.data.installed_count()), Style::default()),
+            Span::styled(" installed", Style::default()),
+            Span::styled("  ·  ", Style::default()),
+            Span::styled(thousands(app.data.updates.len()), Style::default()),
+            Span::styled(" updates", Style::default()),
         ]),
         Line::from(vec![Span::styled(
             format!("downloads: {}", app.paths.downloads_dir.display()),
-            Style::default().fg(FAINT),
+            Style::default(),
         )]),
     ];
     frame.render_widget(
         Paragraph::new(lines)
-            .style(Style::default().bg(BG))
+            .style(Style::default())
             .wrap(Wrap { trim: true }),
         text_area,
     );
@@ -138,7 +126,7 @@ fn draw_brand(frame: &mut Frame, app: &App, area: Rect) {
         frame.render_widget(
             Paragraph::new(Line::from(Span::styled(
                 "─".repeat(area.width as usize),
-                Style::default().fg(FAINT),
+                Style::default(),
             ))),
             Rect {
                 x: area.x,
@@ -160,9 +148,9 @@ fn draw_menu(frame: &mut Frame, app: &mut App, area: Rect) {
     frame.render_widget(
         Paragraph::new(Line::from(Span::styled(
             "MAIN MENU",
-            Style::default().fg(DIM).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         )))
-        .style(Style::default().bg(BG)),
+        .style(Style::default()),
         header,
     );
 
@@ -189,10 +177,10 @@ fn draw_menu(frame: &mut Frame, app: &mut App, area: Rect) {
             ListItem::new(Line::from(vec![
                 Span::styled(
                     format!(" {marker}  "),
-                    Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
+                    Style::default().add_modifier(Modifier::BOLD),
                 ),
-                Span::styled(format!("{:<22}", item.title()), Style::default().fg(FG)),
-                Span::styled(item.description(), Style::default().fg(DIM)),
+                Span::styled(format!("{:<22}", item.title()), Style::default()),
+                Span::styled(item.description(), Style::default()),
             ]))
         })
         .collect();
@@ -261,20 +249,13 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
         "ready".to_string()
     };
     lines.push(Line::from(vec![
-        Span::styled("state  ", Style::default().fg(DIM)),
-        Span::styled(
-            missing,
-            Style::default().fg(if app.data.loading_pacman {
-                YELLOW
-            } else {
-                GREEN
-            }),
-        ),
+        Span::styled("state  ", Style::default().add_modifier(Modifier::DIM)),
+        Span::styled(missing, Style::default()),
     ]));
 
     frame.render_widget(
         Paragraph::new(lines)
-            .style(Style::default().bg(PANEL))
+            .style(Style::default())
             .wrap(Wrap { trim: false }),
         inner,
     );
@@ -282,7 +263,10 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
 
 fn kv(key: &str, value: &str) -> Line<'static> {
     Line::from(vec![
-        Span::styled(format!("{key:<18}"), Style::default().add_modifier(Modifier::DIM)),
+        Span::styled(
+            format!("{key:<18}"),
+            Style::default().add_modifier(Modifier::DIM),
+        ),
         Span::styled(value.to_string(), Style::default()),
     ])
 }

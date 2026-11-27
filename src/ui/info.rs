@@ -8,9 +8,7 @@ use ratatui::widgets::Paragraph;
 
 use crate::app::{App, InfoState, Row, RowKind};
 use crate::model::{Source, Status, format_bytes};
-use crate::ui::{
-    self, ACCENT2, BLUE, DIM, FG, GREEN, RED, YELLOW, panel_block, spinner, thousands,
-};
+use crate::ui::{self, panel_block, spinner, thousands};
 
 const KEY_WIDTH: usize = 14;
 const VALUE_INDENT: usize = KEY_WIDTH + 2;
@@ -27,9 +25,9 @@ pub fn draw(frame: &mut Frame, app: &App, area: Rect) {
         frame.render_widget(
             Paragraph::new(Line::from(Span::styled(
                 "No package selected",
-                Style::default().fg(DIM),
+                Style::default(),
             )))
-            .style(Style::default().bg(ui::PANEL))
+            .style(Style::default())
             .alignment(Alignment::Center),
             inner,
         );
@@ -37,29 +35,23 @@ pub fn draw(frame: &mut Frame, app: &App, area: Rect) {
     };
 
     let lines = build_lines(app, row, inner.width as usize);
-    frame.render_widget(
-        Paragraph::new(lines).style(Style::default().bg(ui::PANEL)),
-        inner,
-    );
+    frame.render_widget(Paragraph::new(lines).style(Style::default()), inner);
 }
 
 fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
     let status = app.row_status(row);
-    let (label, color) = full_status(status);
+    let label = full_status(status);
     let mut lines = vec![
         Line::from(vec![
-            Span::styled(" ● ", Style::default().fg(color)),
-            Span::styled(
-                label,
-                Style::default().fg(color).add_modifier(Modifier::BOLD),
-            ),
+            Span::styled(" ● ", Style::default()),
+            Span::styled(label, Style::default().add_modifier(Modifier::BOLD)),
             Span::styled("  ", Style::default()),
             ui::source_tag(row.source),
         ]),
         Line::from(""),
         Line::from(Span::styled(
             "Package Information",
-            Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         )),
     ];
 
@@ -89,10 +81,10 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
 
     if let RowKind::Update { old, new } = &row.kind {
         lines.push(Line::from(vec![
-            Span::styled("Update  ", Style::default().fg(YELLOW)),
+            Span::styled("Update  ", Style::default()),
             Span::styled(
                 format!("{old} → {new}"),
-                Style::default().fg(YELLOW).add_modifier(Modifier::BOLD),
+                Style::default().add_modifier(Modifier::BOLD),
             ),
         ]));
     }
@@ -101,13 +93,13 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
         None | Some(InfoState::Loading) => {
             lines.push(Line::from(Span::styled(
                 format!("{} loading package metadata…", spinner(app)),
-                Style::default().fg(DIM),
+                Style::default(),
             )));
         }
         Some(InfoState::Failed(error)) => {
             lines.push(Line::from(Span::styled(
                 format!("metadata unavailable: {error}"),
-                Style::default().fg(RED),
+                Style::default(),
             )));
         }
         Some(InfoState::Ready(info)) => {
@@ -130,7 +122,7 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
             if let Some(description) = &info.description {
                 lines.push(Line::from(""));
                 for chunk in wrap_words(description, width, 4) {
-                    lines.push(Line::from(Span::styled(chunk, Style::default().fg(FG))));
+                    lines.push(Line::from(Span::styled(chunk, Style::default())));
                 }
             }
             lines.push(Line::from(""));
@@ -187,8 +179,8 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
                 }
                 if let Some(date) = &info.out_of_date {
                     lines.push(Line::from(vec![
-                        Span::styled("Out of date", Style::default().fg(RED)),
-                        Span::styled(format!("  {date}"), Style::default().fg(RED)),
+                        Span::styled("Out of date", Style::default()),
+                        Span::styled(format!("  {date}"), Style::default()),
                     ]));
                 }
             }
@@ -294,12 +286,6 @@ fn truncate(text: &str, width: usize) -> String {
     }
 }
 
-fn full_status(status: Status) -> (&'static str, ratatui::style::Color) {
-    match status {
-        Status::Installed => (status.label(), GREEN),
-        Status::Upgrade => (status.label(), YELLOW),
-        Status::Newer => (status.label(), BLUE),
-        Status::NotInstalled => (status.label(), DIM),
-        Status::Unknown => (status.label(), DIM),
-    }
+fn full_status(status: Status) -> &'static str {
+    status.label()
 }

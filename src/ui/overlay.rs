@@ -8,7 +8,7 @@ use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph, Wrap};
 
 use crate::app::{App, Operation};
 use crate::model::format_bytes;
-use crate::ui::{self, ACCENT, ACCENT2, DIM, FAINT, FG, GREEN, RED, YELLOW};
+use crate::ui;
 
 fn overlay_rect(area: Rect, width: u16, height: u16) -> Rect {
     let width = width.min(area.width.saturating_sub(4)).max(20);
@@ -21,15 +21,14 @@ fn overlay_rect(area: Rect, width: u16, height: u16) -> Rect {
     }
 }
 
-fn modal_block(title: &str, color: ratatui::style::Color) -> Block<'static> {
+fn modal_block(title: &str) -> Block<'static> {
     Block::default()
         .borders(Borders::ALL)
         .border_type(BorderType::Double)
-        .border_style(Style::default().fg(color))
-        .style(Style::default().bg(ui::PANEL))
+        .border_style(Style::default())
         .title(Line::from(Span::styled(
             format!(" {title} "),
-            Style::default().fg(color).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         )))
         .title_alignment(Alignment::Left)
 }
@@ -42,40 +41,32 @@ pub fn draw_confirm(frame: &mut Frame, app: &App, area: Rect) {
     let mut body: Vec<Line> = Vec::new();
     body.push(Line::from(Span::styled(
         dialog.title.clone(),
-        Style::default()
-            .fg(if dialog.danger { RED } else { ACCENT2 })
-            .add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )));
     body.push(Line::from(""));
     for item in &dialog.summary {
         body.push(Line::from(vec![
-            Span::styled("  • ", Style::default().fg(ACCENT2)),
-            Span::styled(item.clone(), Style::default().fg(FG)),
+            Span::styled("  • ", Style::default()),
+            Span::styled(item.clone(), Style::default()),
         ]));
     }
     body.push(Line::from(""));
     body.push(Line::from(Span::styled(
         "COMMANDS",
-        Style::default().fg(DIM).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )));
     for command in &dialog.commands {
         body.push(Line::from(Span::styled(
             format!("  $ {command}"),
-            Style::default().fg(YELLOW),
+            Style::default(),
         )));
     }
     body.push(Line::from(""));
     body.push(Line::from(vec![
-        Span::styled(
-            "[Y/Enter]",
-            Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
-        ),
-        Span::styled(" run   ", Style::default().fg(DIM)),
-        Span::styled(
-            "[N/Esc]",
-            Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
-        ),
-        Span::styled(" cancel", Style::default().fg(DIM)),
+        Span::styled("[Y/Enter]", Style::default().add_modifier(Modifier::BOLD)),
+        Span::styled(" run   ", Style::default()),
+        Span::styled("[N/Esc]", Style::default().add_modifier(Modifier::BOLD)),
+        Span::styled(" cancel", Style::default()),
     ]));
 
     let text_width = width.saturating_sub(4) as usize;
@@ -90,10 +81,7 @@ pub fn draw_confirm(frame: &mut Frame, app: &App, area: Rect) {
     let rect = overlay_rect(area, width, height);
 
     frame.render_widget(Clear, rect);
-    frame.render_widget(
-        modal_block("CONFIRM", if dialog.danger { RED } else { ACCENT }),
-        rect,
-    );
+    frame.render_widget(modal_block("CONFIRM"), rect);
     let inner = Rect {
         x: rect.x + 2,
         y: rect.y + 1,
@@ -102,7 +90,7 @@ pub fn draw_confirm(frame: &mut Frame, app: &App, area: Rect) {
     };
     frame.render_widget(
         Paragraph::new(body)
-            .style(Style::default().bg(ui::PANEL))
+            .style(Style::default())
             .wrap(Wrap { trim: false }),
         inner,
     );
@@ -117,17 +105,9 @@ pub fn draw_operation(frame: &mut Frame, app: &App, area: Rect) {
         area.width.saturating_sub(10).min(100),
         (area.height * 72 / 100).max(10),
     );
-    let border_color = match operation.result {
-        Some(true) => GREEN,
-        Some(false) => RED,
-        None => ACCENT,
-    };
     frame.render_widget(Clear, rect);
     let title = truncate(&operation.title, rect.width.saturating_sub(14) as usize);
-    frame.render_widget(
-        modal_block(&format!("OPERATION · {title}"), border_color),
-        rect,
-    );
+    frame.render_widget(modal_block(&format!("OPERATION · {title}")), rect);
 
     let inner = Rect {
         x: rect.x + 2,
@@ -159,30 +139,20 @@ pub fn draw_operation(frame: &mut Frame, app: &App, area: Rect) {
 }
 
 fn draw_operation_status(frame: &mut Frame, operation: &Operation, area: Rect) {
-    let (icon, color, text) = if operation.running {
-        (
-            spinner_from_state(operation),
-            ACCENT,
-            operation.status.clone(),
-        )
+    let (icon, text) = if operation.running {
+        (spinner_from_state(operation), operation.status.clone())
     } else {
         match operation.result {
-            Some(true) => ("✓", GREEN, format!("done — {}", operation.status)),
-            Some(false) => ("×", RED, operation.status.clone()),
-            None => ("·", DIM, operation.status.clone()),
+            Some(true) => ("✓", format!("done — {}", operation.status)),
+            Some(false) => ("×", operation.status.clone()),
+            None => ("·", operation.status.clone()),
         }
     };
     let line = Line::from(vec![
-        Span::styled(format!(" {icon} "), Style::default().fg(color)),
-        Span::styled(
-            text,
-            Style::default().fg(color).add_modifier(Modifier::BOLD),
-        ),
+        Span::styled(format!(" {icon} "), Style::default()),
+        Span::styled(text, Style::default().add_modifier(Modifier::BOLD)),
     ]);
-    frame.render_widget(
-        Paragraph::new(line).style(Style::default().bg(ui::PANEL)),
-        area,
-    );
+    frame.render_widget(Paragraph::new(line).style(Style::default()), area);
 }
 
 fn spinner_from_state(operation: &Operation) -> &'static str {
@@ -262,33 +232,24 @@ fn draw_operation_log(frame: &mut Frame, operation: &Operation, area: Rect) {
             ))
         })
         .collect();
-    frame.render_widget(
-        Paragraph::new(lines).style(Style::default().bg(ui::BG)),
-        area,
-    );
+    frame.render_widget(Paragraph::new(lines).style(Style::default()), area);
 }
 
 fn draw_operation_hints(frame: &mut Frame, operation: &Operation, area: Rect) {
     let hints: Vec<Span> = if operation.running {
         vec![
-            Span::styled(
-                " [Esc]",
-                Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(" cancel", Style::default().fg(DIM)),
+            Span::styled(" [Esc]", Style::default().add_modifier(Modifier::BOLD)),
+            Span::styled(" cancel", Style::default()),
         ]
     } else {
         vec![
-            Span::styled(
-                " [Enter]",
-                Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(" close", Style::default().fg(DIM)),
+            Span::styled(" [Enter]", Style::default().add_modifier(Modifier::BOLD)),
+            Span::styled(" close", Style::default()),
         ]
     };
     frame.render_widget(
         Paragraph::new(Line::from(hints))
-            .style(Style::default().bg(ui::PANEL))
+            .style(Style::default())
             .alignment(Alignment::Right),
         area,
     );
@@ -300,17 +261,17 @@ pub fn draw_help(frame: &mut Frame, app: &App, area: Rect) {
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
             title,
-            Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         )));
     };
 
     lines.push(Line::from(Span::styled(
         "PPM · Powerful Package Manager",
-        Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )));
     lines.push(Line::from(Span::styled(
         "Every pacman repository and the AUR in one flat searchable list.",
-        Style::default().fg(DIM),
+        Style::default(),
     )));
 
     section("GLOBAL", &mut lines);
@@ -365,7 +326,7 @@ pub fn draw_help(frame: &mut Frame, app: &App, area: Rect) {
         .min(area.height.saturating_sub(2));
     let rect = overlay_rect(area, width, height);
     frame.render_widget(Clear, rect);
-    frame.render_widget(modal_block("HELP", ACCENT2), rect);
+    frame.render_widget(modal_block("HELP"), rect);
     let inner = Rect {
         x: rect.x + 2,
         y: rect.y + 1,
@@ -374,18 +335,17 @@ pub fn draw_help(frame: &mut Frame, app: &App, area: Rect) {
     };
     frame.render_widget(
         Paragraph::new(lines)
-            .style(Style::default().bg(ui::PANEL))
+            .style(Style::default())
             .wrap(Wrap { trim: false }),
         inner,
     );
     let _ = app;
-    let _ = FAINT;
 }
 
 fn help_line(key: &str, description: &str) -> Line<'static> {
     Line::from(vec![
-        Span::styled(format!(" {key:<12}"), Style::default().fg(YELLOW)),
-        Span::styled(description.to_string(), Style::default().fg(FG)),
+        Span::styled(format!(" {key:<12}"), Style::default()),
+        Span::styled(description.to_string(), Style::default()),
     ])
 }
 

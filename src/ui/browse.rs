@@ -9,10 +9,7 @@ use ratatui::widgets::{Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarStat
 
 use crate::app::{App, BrowseMode, Row};
 use crate::model::Status;
-use crate::ui::{
-    self, ACCENT, ACCENT2, BLUE, DIM, FAINT, FG, GREEN, YELLOW, footer_hints, mode_hints,
-    panel_block, spinner, thousands,
-};
+use crate::ui::{self, footer_hints, mode_hints, panel_block, spinner, thousands};
 
 const VERSION_WIDTH: usize = 14;
 const STATE_WIDTH: usize = 10;
@@ -55,10 +52,7 @@ fn draw_header(frame: &mut Frame, app: &App, area: Rect) {
     let title = format!(" {} ", app.browse.mode.title());
     let left = Line::from(vec![
         Span::styled(" ", Style::default()),
-        Span::styled(
-            title,
-            Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
-        ),
+        Span::styled(title, Style::default().add_modifier(Modifier::BOLD)),
         Span::styled(
             format!(
                 "{} shown / {} total",
@@ -77,19 +71,19 @@ fn draw_header(frame: &mut Frame, app: &App, area: Rect) {
     if app.browse.loading {
         right.push(Span::styled(
             format!("{} loading  ", spinner(app)),
-            Style::default().fg(YELLOW),
+            Style::default(),
         ));
     }
     if app.data.loading_aur {
         right.push(Span::styled(
             format!("{} AUR  ", spinner(app)),
-            Style::default().fg(DIM),
+            Style::default(),
         ));
     }
     if app.data.aur_updates_pending {
         right.push(Span::styled(
             format!("{} AUR updates  ", spinner(app)),
-            Style::default().fg(DIM),
+            Style::default(),
         ));
     }
     frame.render_widget(
@@ -103,7 +97,7 @@ fn draw_header(frame: &mut Frame, app: &App, area: Rect) {
 fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
     let mut spans = vec![Span::styled(
         "  > ",
-        Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )];
     if app.browse.filter.is_empty() {
         spans.push(Span::styled(
@@ -113,7 +107,7 @@ fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
     } else {
         spans.push(Span::styled(
             app.browse.filter.clone(),
-            Style::default().fg(FG).add_modifier(Modifier::BOLD),
+            Style::default().add_modifier(Modifier::BOLD),
         ));
     }
     let cursor = if (app.spinner / 3).is_multiple_of(2) {
@@ -123,7 +117,7 @@ fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
     };
     spans.push(Span::styled(
         cursor,
-        Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     ));
     frame.render_widget(
         Paragraph::new(Line::from(spans)).style(Style::default()),
@@ -149,7 +143,7 @@ fn draw_separator(frame: &mut Frame, area: Rect) {
     frame.render_widget(
         Paragraph::new(Line::from(Span::styled(
             "─".repeat(area.width as usize),
-            Style::default().fg(FAINT),
+            Style::default(),
         )))
         .style(Style::default()),
         area,
@@ -160,7 +154,7 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
     let title = format!(" PACKAGES · {} ", thousands(app.browse.filtered.len()));
     let block = panel_block(Line::from(Span::styled(
         title,
-        Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )));
     let inner = block.inner(area);
     frame.render_widget(block, area);
@@ -174,10 +168,10 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
         "STATE",
         None,
         inner.width,
-        Style::default().fg(FAINT),
+        Style::default(),
     );
     frame.render_widget(
-        Paragraph::new(header).style(Style::default().bg(ui::PANEL)),
+        Paragraph::new(header).style(Style::default()),
         Rect {
             y: inner.y,
             height: 1,
@@ -242,7 +236,7 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
         let marked = app.browse.marked.contains(&row.name);
         let line = row_line(app, &row, selected, marked, inner.width);
         frame.render_widget(
-            Paragraph::new(line).style(Style::default().bg(ui::PANEL)),
+            Paragraph::new(line).style(Style::default()),
             Rect {
                 x: body.x,
                 y: body.y + slot as u16,
@@ -266,9 +260,9 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
             .begin_symbol(None)
             .end_symbol(None)
             .track_symbol(Some("│"))
-            .track_style(Style::default().fg(FAINT))
+            .track_style(Style::default())
             .thumb_symbol("┃")
-            .thumb_style(Style::default().fg(ACCENT2)),
+            .thumb_style(Style::default()),
         scroll_area,
         &mut scrollbar_state,
     );
@@ -277,18 +271,18 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
 fn row_line(app: &App, row: &Row, selected: bool, marked: bool, width: u16) -> Line<'static> {
     let version = app.row_display_version(row);
     let status = app.row_status(row);
-    let (state_label, state_color) = short_status(status);
+    let state_label = short_status(status);
     let name_style = match status {
-        Status::Installed => Style::default().fg(GREEN),
-        Status::Upgrade => Style::default().fg(YELLOW),
-        Status::Newer => Style::default().fg(BLUE),
-        Status::NotInstalled => Style::default().fg(FG),
-        Status::Unknown => Style::default().fg(DIM),
+        Status::Installed => Style::default(),
+        Status::Upgrade => Style::default(),
+        Status::Newer => Style::default(),
+        Status::NotInstalled => Style::default(),
+        Status::Unknown => Style::default(),
     };
     let marker = if selected {
-        Span::styled("▸", Style::default().fg(ACCENT))
+        Span::styled("▸", Style::default())
     } else if marked {
-        Span::styled("●", Style::default().fg(ACCENT2))
+        Span::styled("●", Style::default())
     } else {
         Span::styled(" ", Style::default())
     };
@@ -314,7 +308,7 @@ fn row_line(app: &App, row: &Row, selected: bool, marked: bool, width: u16) -> L
         ),
         Span::styled(
             format!(" {:>STATE_WIDTH$}", state_label),
-            Style::default().fg(state_color),
+            Style::default().add_modifier(Modifier::DIM),
         ),
     ]);
     if selected {
@@ -354,13 +348,13 @@ fn column_line(
     ])
 }
 
-fn short_status(status: Status) -> (&'static str, ratatui::style::Color) {
+fn short_status(status: Status) -> &'static str {
     match status {
-        Status::Installed => ("installed", GREEN),
-        Status::Upgrade => ("upgrade", YELLOW),
-        Status::Newer => ("newer", BLUE),
-        Status::NotInstalled => ("", DIM),
-        Status::Unknown => ("…", DIM),
+        Status::Installed => "installed",
+        Status::Upgrade => "upgrade",
+        Status::Newer => "newer",
+        Status::NotInstalled => "",
+        Status::Unknown => "…",
     }
 }
 
