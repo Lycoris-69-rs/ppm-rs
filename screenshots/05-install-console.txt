@@ -1,0 +1,40 @@
+  INSTALL PACKAGES 1 380 shown / 143 402 total
+  > linux▏                                                                                                            1 380 matches
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+╭ PACKAGES · 1 380 ──────────────────────────────────────────────────────────────╮╭ PACKAGE INFORMATION ───────────────────────────╮
+│ PACKAGE                                                    VERSION      STATE  ┃│ ● NOT INSTALLED                                │
+│▸ linux                                               7.3.6.arch1-1             ││                                                │
+│  linux-3-finge╔ OPERATION · Installing 1 package(s) ═════════════════════════════════════════════════════════════╗               │
+│  linux-73rc5  ║  ✓ done — install: done                                                                          ║               │
+│  linux-73rc5-d║  $ sudo -n pacman -S --needed --noconfirm linux                                                  ║               │
+│  linux-73rc5-h║  resolving dependencies...                                                                       ║es             │
+│  linux-73rc6  ║  looking for conflicting packages...                                                             ║               │
+│  linux-73rc6-d║                                                                                                  ║               │
+│  linux-73rc6-h║  Packages (2) linux-7.3.6.arch1-1  linux-headers-7.3.6.arch1-1                                   ║               │
+│  linux-a11y-so║                                                                                                  ║               │
+│  linux-air-com║  Total Download Size:   151.24 MiB                                                               ║               │
+│  linux-air-com║  Total Installed Size:  151.61 MiB                                                               ║m/archlinux/li…│
+│  linux-akulm  ║                                                                                                  ║               │
+│  linux-amd-col║  :: Proceed with installation? [Y/n]                                                             ║amfs · kmod    │
+│  linux-amd-col║  checking keyring...                                                                             ║aders and      │
+│  linux-amd-drm║  installing linux...                                                                             ║ing modules ·… │
+│  linux-amd-drm║  installing linux-headers...                                                                     ║SYNC-MODULE ·… │
+│  linux-amd-drm║  :: Running post-transaction hooks...                                                            ║ffens (heftig)…│
+│  linux-amd-drm║  (1/2) Updating module dependencies...                                                           ║01 2026        │
+│  linux-amd-drm║  (2/2) Updating the desktop file MIME type cache...                                              ║               │
+│  linux-amd-drm║                                                                                                  ║               │
+│  linux-amd-git║                                                                                                  ║               │
+│  linux-amd-hea║                                                                                                  ║               │
+│  linux-amd-sta║                                                                                                  ║               │
+│  linux-amd-sta║                                                                                                  ║               │
+│  linux-apfs-rw║                                                                                                  ║               │
+│  linux-apfs-rw║                                                                                                  ║               │
+│  linux-api-hea║                                                                                                  ║               │
+│  linux-arctis-║                                                                                    [Enter] close ║               │
+│  linux-arctis-╚══════════════════════════════════════════════════════════════════════════════════════════════════╝               │
+│  linux-arctis-manager-legacy                     aur             —             ││                                                │
+│  linux-assistant-bin                             aur             —             ││                                                │
+│  linux-ath-dfs                                   aur             —             ││                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯╰────────────────────────────────────────────────╯
+ Enter install   ^D download   Space mark   ↑↓ move   Type search   Esc back   F1 help
+ pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB

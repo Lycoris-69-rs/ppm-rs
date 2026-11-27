@@ -1,0 +1,40 @@
+  INSTALL PACKAGES 31 749 shown / 143 402 total
+  > git▏                                                                                                             31 749 matches
+──────────────╔ HELP ════════════════════════════════════════════════════════════════════════════════════════════════╗──────────────
+╭ PACKAGES · 3║ PPM · Powerful Package Manager                                                                       ║─────────────╮
+│ PACKAGE     ║ Every pacman repository and the AUR in one flat searchable list.                                     ║             │
+│▸ git        ║                                                                                                      ║             │
+│  git-absorb ║ GLOBAL                                                                                               ║             │
+│  git-ad-git ║  ↑ ↓ / j k   move the selection                                                                      ║             │
+│  git-add-int║  Enter       select / confirm                                                                        ║             │
+│  git-age    ║  Esc         step back (clears the search first)                                                     ║             │
+│  git-age-bin║  F1 or ?     show this help                                                                          ║             │
+│  git-age-key║  Ctrl+C      quit PPM                                                                                ║             │
+│  git-ai-bin ║                                                                                                      ║l system     │
+│  git-annex  ║ PACKAGE BROWSER                                                                                      ║             │
+│  git-annex-a║  type        filter the flat package list                                                            ║             │
+│  git-annex-d║  Backspace   delete a character                                                                      ║             │
+│  git-annex-m║  Ctrl+U      clear the search field                                                                  ║/            │
+│  git-annex-r║  Ctrl+D      download the selected/marked packages only                                              ║             │
+│  git-annex-r║  Space       mark a package for a batch action                                                       ║ · perl-error│
+│  git-annex-r║  Enter       install / remove / upgrade / reinstall                                                  ║openssl ·…   │
+│  git-annex-r║  Ctrl+R      reload package data                                                                     ║ upstream zsh│
+│  git-annex-r║                                                                                                      ║tk and git…  │
+│  git-annex-r║ NOTES                                                                                                ║             │
+│  git-annex-s║  downloads   package tarballs and AUR snapshots are saved to the downloads directory                 ║ 2026        │
+│  git-annex-s║  sudo        system changes run through `sudo -n`; run `sudo -v` in a terminal first (or start PPM   ║             │
+│  git-apprais║ as root) to cache credentials                                                                        ║             │
+│  git-archaeo║  AUR         AUR packages are built and installed with yay or paru, which need sudo credentials as   ║             │
+│  git-archive║ well                                                                                                 ║             │
+│  git-archive║  flat list   repositories are merged on purpose: only per-package metadata mentions the AUR          ║             │
+│  git-assembl║                                                                                                      ║             │
+│  git-auto-sy║                                                                                                      ║             │
+│  git-autofix║                                                                                                      ║             │
+│  git-autofix║                                                                                                      ║             │
+│  git-backdat║                                                                                                      ║             │
+│  git-backup ║                                                                                                      ║             │
+│  git-backup-║                                                                                                      ║             │
+│  git-barber ║                                                                                                      ║             │
+╰─────────────╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝─────────────╯
+ Enter install   ^D download   Space mark   ↑↓ move   Type search   Esc back   F1 help
+ pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB

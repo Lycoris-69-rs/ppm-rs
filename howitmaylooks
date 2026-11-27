@@ -1,0 +1,36 @@
+//main меню
+
+____  ____  __  __     ____  ___ 
+(  _ \(  _ \(  \/  )___(  _ \/ __)   Powerful Package Manager
+ )___/ )___/ )    ((___))   /\__ \   Pacman ...G     Yay ...G
+(__)  (__)  (_/\/\_)   (_)\_)(___/   Packages n 
+
+
+|Install Packages
+Remove Pachages
+Update Packages
+Downgrade Packages
+Clean Orphans
+Clean Package Cache
+System Tools //настройки пакмана
+Exit
+
+//меню инсталяции
+
+//сверху меню для ввода в поиск
+//справа информация о пакете
+//ниже этого меню пакеты
+
+> linux
+------------
+linux-api-headers
+linux-cachyos
+........
+
+| - status: INSTALLED
+|
+| Package Information
+| Name          : linux-api-headers
+| Version       : 6.18..
+| Description   :
+| .....

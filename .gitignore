@@ -1,0 +1,16 @@
+# Rust build artifacts
+/target/
+# Local Rust toolchain installed by the dev setup
+/.toolchain/
+# Runtime data
+/downloads/
+/.ppm-cache/
+# Dev/screenshot scratch space
+/.dev/
+/.chrome/
+# Editor/OS noise
+*.swp
+.DS_Store
+# Python bytecode (test scripts)
+__pycache__/
+*.pyc

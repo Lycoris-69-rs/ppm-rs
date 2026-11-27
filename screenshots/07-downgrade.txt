@@ -1,0 +1,40 @@
+  DOWNGRADE PACKAGES 1 577 shown / 1 577 total
+  > Search cached package versions▏
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+╭ PACKAGES · 1 577 ──────────────────────────────────────────────────────────────╮╭ PACKAGE INFORMATION ───────────────────────────╮
+│ PACKAGE                                                    VERSION      STATE  ┃│ ● INSTALLED                                    │
+│▸ 7zip                                                    26.04-1.1  installed  ││                                                │
+│  a52dec                                                  0.8.0-3.1  installed  ││Package Information                             │
+│  aalib                                                 1.4rc5-19.1  installed  ││Name          : 7zip                            │
+│  abseil-cpp                                         20260817.0-2.1  installed  ││Cached version: 26.04-1.1                       │
+│  accountsservice                                       26.27.3-1.1  installed  ││Installed     : 26.04-1.1                       │
+│  acl                                                     2.4.0-1.1  installed  ││Architecture  : x86_64_v4                       │
+│  ada                                                     4.0.0-1.1  installed  ││File size     : 2.0 MiB                         │
+│  adw-gtk-theme                                               6.5-1  installed  ││Location      : /var/cache/pacman/pkg/7zip-26.04│
+│  adwaita-cursors                                            51.0-1  installed  ││                -1.1-x86_64_v4.pkg.tar.zst      │
+│  adwaita-fonts                                              51.0-2  installed  ││                                                │
+│  adwaita-icon-theme                                         51.0-1  installed  ││Reinstalling this tarball downgrades the package│
+│  adwaita-icon-theme-legacy                                  46.2-3  installed  ││                                                │
+│  alacritty                                              0.17.0-1.2  installed  ││                                                │
+│  alsa-card-profiles                                      1:1.6.9-1  installed  ││                                                │
+│  alsa-firmware                                             1.2.4-4  installed  ││                                                │
+│  alsa-lib                                             1.2.16.1-1.1  installed  ││                                                │
+│  alsa-plugins                                         1:1.2.12-6.1  installed  ││                                                │
+│  alsa-topology-conf                                      1.2.5.1-4  installed  ││                                                │
+│  alsa-ucm-conf                                          1.2.16.1-1  installed  ││                                                │
+│  alsa-utils                                             1.2.16-1.1  installed  ││                                                │
+│  ananicy-cpp                                             1.2.0-1.1  installed  ││                                                │
+│  aom                                                    3.15.2-1.1  installed  ││                                                │
+│  appstream                                               1.2.1-1.1  installed  ││                                                │
+│  archlinux-keyring                                    1:20260909-1  installed  ││                                                │
+│  argon2                                               20190702-7.1  installed  ││                                                │
+│  aribb24                                                 1.0.3-4.1  installed  ││                                                │
+│  aribb25                                                 0.2.7-3.1  installed  ││                                                │
+│  at-spi2-core                                           2.62.1-1.1  installed  ││                                                │
+│  attica                                                 6.31.0-1.1  installed  ││                                                │
+│  attr                                                    2.6.0-1.1  installed  ││                                                │
+│  audit                                                   4.2.1-1.1  installed  ││                                                │
+│  autoconf                                                   2.73-1  installed  ││                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯╰────────────────────────────────────────────────╯
+ Enter reinstall cached   Space mark   ↑↓ move   Type search   Esc back   F1 help
+ pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB

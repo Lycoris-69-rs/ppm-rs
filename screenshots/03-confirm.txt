@@ -1,0 +1,40 @@
+  INSTALL PACKAGES 1 380 shown / 143 402 total
+  > linux▏                                                                                                            1 380 matches
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+╭ PACKAGES · 1 380 ──────────────────────────────────────────────────────────────╮╭ PACKAGE INFORMATION ───────────────────────────╮
+│ PACKAGE                                                    VERSION      STATE  ┃│ ● NOT INSTALLED                                │
+│▸ linux                                               7.3.6.arch1-1             ││                                                │
+│  linux-3-finger-drag-git                         aur             —             ││Package Information                             │
+│  linux-73rc5                                     aur             —             ││Name          : linux                           │
+│  linux-73rc5-docs                                aur             —             ││Version       : 7.3.6.arch1-1                   │
+│  linux-73rc5-headers                             aur             —             ││Source        : pacman repositories             │
+│  linux-73rc6                                     aur             —             ││                                                │
+│  linux-73rc6-docs                                aur             —             ││The Linux kernel and modules                    │
+│  linux-73rc6-headers                             aur             —             ││                                                │
+│  linux-a11y-sound-theme                          aur             —             ││Download size : 151.24 MiB                      │
+│  linux-air-combat                                aur             —             ││Installed size: 151.61 MiB                      │
+│  linux-air-combat╔ CONFIRM ═══════════════════════════════════════════════════════════════════════════════════╗.com/archlinux/li…│
+│  linux-akulm     ║ Install 1 package(s)                                                                       ║                  │
+│  linux-amd-color ║                                                                                            ║itramfs · kmod    │
+│  linux-amd-color-║   • linux                                                                                  ║ headers and      │
+│  linux-amd-drm-fi║                                                                                            ║ilding modules ·… │
+│  linux-amd-drm-fi║ COMMANDS                                                                                   ║ NTSYNC-MODULE ·… │
+│  linux-amd-drm-fi║   $ sudo -n pacman -S --needed --noconfirm linux                                           ║Steffens (heftig)…│
+│  linux-amd-drm-ne║                                                                                            ║08:01 2026        │
+│  linux-amd-drm-ne║ [Y/Enter] run   [N/Esc] cancel                                                             ║                  │
+│  linux-amd-drm-ne╚════════════════════════════════════════════════════════════════════════════════════════════╝                  │
+│  linux-amd-git                                   aur             —             ││                                                │
+│  linux-amd-headers-git                           aur             —             ││                                                │
+│  linux-amd-staging-drm-next-git                  aur             —             ││                                                │
+│  linux-amd-staging-drm-next-headers-git          aur             —             ││                                                │
+│  linux-apfs-rw-dkms                                     1:0.3.22-1             ││                                                │
+│  linux-apfs-rw-dkms-git                          aur             —             ││                                                │
+│  linux-api-headers                                         1:7.1-1  installed  ││                                                │
+│  linux-arctis-manager                            aur             —             ││                                                │
+│  linux-arctis-manager-git                        aur             —             ││                                                │
+│  linux-arctis-manager-legacy                     aur             —             ││                                                │
+│  linux-assistant-bin                             aur             —             ││                                                │
+│  linux-ath-dfs                                   aur             —             ││                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯╰────────────────────────────────────────────────╯
+ Enter install   ^D download   Space mark   ↑↓ move   Type search   Esc back   F1 help
+ pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB

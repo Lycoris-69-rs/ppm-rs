@@ -1,0 +1,40 @@
+ SYSTEM TOOLS  pacman diagnostics and maintenance
+╭ SYSTEM ───────────────────────────────────────────────────╮╭ MAINTENANCE ACTIONS ────────────────────────────────────────────────╮
+│pacman         : Pacman v7.1.0                             ││▸ Refresh package databases                    pacman -Sy            │
+│database       : /var/lib/pacman/                          ││  Full system upgrade (pacman -Syu)            pacman -Syu           │
+│config         : /etc/pacman.conf                          ││  Update AUR packages (AUR helper -Sua)        yay -Sua              │
+│cache          : /var/cache/pacman/pkg/                    ││  Reload package data                          re-read databases     │
+│AUR helper     : yay                                       ││  Clear cached AUR package list                force refresh         │
+│root           : no                                        ││                                                                     │
+│AUR list cache : /home/lycoris/ppm-rs/.ppm-cache/aur-packag││download fresh sync databases with pacman -Sy                        │
+│downloads      : /home/lycoris/ppm-rs/downloads            ││                                                                     │
+│                                                           ││                                                                     │
+│packages       : 143 402                                   ││                                                                     │
+│installed      : 1 423                                     ││                                                                     │
+│updates        : 545                                       ││                                                                     │
+│cache size     : 9.1 GiB                                   ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+│                                                           ││                                                                     │
+╰───────────────────────────────────────────────────────────╯╰─────────────────────────────────────────────────────────────────────╯
+ ↑↓ choose   Enter run action   Esc back
+ pacman 16 607  ·  AUR 127 362  ·  installed 1 423  ·  updates 545  ·  cache 9.1 GiB
