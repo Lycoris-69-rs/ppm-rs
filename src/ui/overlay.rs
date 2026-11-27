@@ -1,5 +1,3 @@
-//! Modal overlays: confirmation dialogs, the running-operation console and help.
-
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};
@@ -156,8 +154,6 @@ fn draw_operation_status(frame: &mut Frame, operation: &Operation, area: Rect) {
 }
 
 fn spinner_from_state(operation: &Operation) -> &'static str {
-    // The operation overlay does not own the app spinner: derive one from the
-    // number of log lines so the icon still animates between redraws.
     let index = operation.lines.len() % ui::SPINNER.len();
     ui::SPINNER[index]
 }
@@ -181,7 +177,6 @@ fn progress_label(progress: &crate::event::Progress) -> String {
     )
 }
 
-/// Monochrome ASCII progress bar (`[====>      ]`) — no colours or fills.
 fn draw_progress(frame: &mut Frame, progress: &crate::event::Progress, area: Rect) {
     if area.width == 0 {
         return;

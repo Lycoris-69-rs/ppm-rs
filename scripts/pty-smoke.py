@@ -8,7 +8,7 @@ the raw byte stream), and verifies the complete flows:
   main menu -> flat package browser -> metadata -> confirm dialog (cancelled)
   -> Ctrl+D real download -> back to menu -> AUR metadata -> clean exit.
 
-Usage: scripts/pty-smoke.py [--binary target/debug/ppm]
+Usage: scripts/pty-smoke.py [--binary target/debug/ppm-rs]
 """
 
 import codecs
@@ -252,7 +252,7 @@ class Session:
 
 
 def main():
-    binary = os.path.join(ROOT, "target", "debug", "ppm")
+    binary = os.path.join(ROOT, "target", "debug", "ppm-rs")
     if len(sys.argv) > 2 and sys.argv[1] == "--binary":
         binary = os.path.abspath(sys.argv[2])
     if not os.path.isfile(binary):

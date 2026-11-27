@@ -1,13 +1,9 @@
-//! The pacman side of the world: one flat package list merged from *all*
-//! configured repositories, plus queries used by the UI and actions.
-
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use crate::exec::{self, Captured};
 use crate::model::{CacheEntry, Package, PkgInfo, Source, SystemInfo, UpdateEntry};
 
-/// Run a pacman query with a stable, parsable locale.
 pub async fn query(args: &[&str]) -> Result<Captured, String> {
     exec::capture("pacman", args).await
 }
@@ -29,11 +25,6 @@ pub async fn require_query(args: &[&str]) -> Result<String, String> {
     Ok(captured.stdout)
 }
 
-/// `pacman -Sl`: every package from every configured repository.
-///
-/// Repositories are intentionally collapsed: the repository column is dropped
-/// and a package name that appears in several repositories is only listed once
-/// (the first occurrence wins, which matches pacman's repo priority order).
 pub async fn list_available() -> Result<Vec<Package>, String> {
     let stdout = require_query(&["-Sl"]).await?;
     Ok(parse_available(&stdout))
@@ -54,7 +45,6 @@ pub fn parse_available(stdout: &str) -> Vec<Package> {
     packages
 }
 
-/// `pacman -Q`: name -> installed version.
 pub async fn list_installed() -> Result<HashMap<String, String>, String> {
     let stdout = require_query(&["-Q"]).await?;
     Ok(parse_installed(&stdout))
@@ -71,7 +61,6 @@ pub fn parse_installed(stdout: &str) -> HashMap<String, String> {
     map
 }
 
-/// `pacman -Qm`: packages that no sync database provides (usually AUR/local).
 pub async fn list_foreign() -> Result<Vec<String>, String> {
     let stdout = require_query(&["-Qm"]).await?;
     Ok(stdout
@@ -80,10 +69,9 @@ pub async fn list_foreign() -> Result<Vec<String>, String> {
         .collect())
 }
 
-/// `pacman -Qu`: packages with an upgrade available.
 pub async fn list_updates() -> Result<Vec<UpdateEntry>, String> {
     let captured = query(&["-Qu"]).await?;
-    // `-Qu` exits 1 with empty output when the system is up to date.
+
     Ok(parse_updates(&captured.stdout))
 }
 
@@ -103,14 +91,11 @@ pub fn parse_updates(stdout: &str) -> Vec<UpdateEntry> {
     updates
 }
 
-/// `pacman -Si <name>`: detailed metadata.
 pub async fn info(name: &str) -> Result<PkgInfo, String> {
     let stdout = require_query(&["-Si", name]).await?;
     Ok(parse_info(&stdout, Source::Pacman))
 }
 
-/// `pacman -Qi <name>`: metadata for an installed package that is not in any
-/// sync database (local builds, packages removed from repositories...).
 pub async fn installed_info(name: &str) -> Result<PkgInfo, String> {
     let stdout = require_query(&["-Qi", name]).await?;
     Ok(parse_info(&stdout, Source::Pacman))
@@ -162,9 +147,6 @@ pub fn parse_info(stdout: &str, source: Source) -> PkgInfo {
     info
 }
 
-/// Split a pacman field into its values.  Values are separated either by runs
-/// of two or more spaces (single-line fields) or by the newlines introduced by
-/// continuation lines (multi-line fields such as Optional Deps).
 fn split_list(value: &str) -> Vec<String> {
     if value.trim() == "None" {
         return Vec::new();
@@ -188,8 +170,6 @@ fn non_empty(value: &str) -> Option<String> {
     }
 }
 
-/// Resolve the download URLs of a package (and only that package: `-dd` tells
-/// pacman to skip dependency resolution).  Returns `(url, size_hint)` pairs.
 pub async fn download_urls(name: &str) -> Result<Vec<(String, u64)>, String> {
     let stdout = require_query(&[
         "-Spdd",
@@ -221,10 +201,9 @@ pub async fn download_urls(name: &str) -> Result<Vec<(String, u64)>, String> {
     Ok(urls)
 }
 
-/// `pacman -Qtdq`: orphaned packages.
 pub async fn list_orphans() -> Result<Vec<String>, String> {
     let captured = query(&["-Qtdq"]).await?;
-    // Exit code 1 simply means "no orphans".
+
     if captured.status != 0 && !captured.stdout.trim().is_empty() {
         return Err(captured.stderr.trim().to_string());
     }
@@ -237,7 +216,6 @@ pub async fn list_orphans() -> Result<Vec<String>, String> {
         .collect())
 }
 
-/// Read pacman's configuration paths.
 pub async fn cache_dirs() -> Vec<PathBuf> {
     let dirs = match exec::capture("pacman-conf", &["CacheDir"]).await {
         Ok(captured) if captured.status == 0 => captured
@@ -280,7 +258,7 @@ pub async fn version() -> String {
             continue;
         };
         let mut version = line[position..].trim();
-        // "Pacman v7.1.0 - libalpm v16.0.1" -> "Pacman v7.1.0"
+
         if let Some(index) = version.find(" - ") {
             version = &version[..index];
         }
@@ -303,7 +281,6 @@ pub async fn system_info() -> SystemInfo {
     }
 }
 
-/// Compute the total size and file count of the package cache.
 pub async fn cache_stats(dirs: Vec<PathBuf>) -> (u64, usize) {
     tokio::task::spawn_blocking(move || {
         let mut total = 0u64;
@@ -328,18 +305,15 @@ pub async fn cache_stats(dirs: Vec<PathBuf>) -> (u64, usize) {
     .unwrap_or((0, 0))
 }
 
-/// Result of scanning the pacman cache.
 #[derive(Debug, Default)]
 pub struct CacheScan {
-    /// One entry per unique package version (used by the downgrade screen).
     pub entries: Vec<CacheEntry>,
-    /// Total size of all cached tarballs, including duplicate architectures.
+
     pub total_size: u64,
-    /// Number of cached tarball files.
+
     pub file_count: usize,
 }
 
-/// Scan the pacman cache for package tarballs usable for a downgrade.
 pub async fn scan_cache(dirs: Vec<PathBuf>, installed: HashMap<String, String>) -> CacheScan {
     tokio::task::spawn_blocking(move || scan_cache_blocking(&dirs, &installed))
         .await
@@ -379,8 +353,7 @@ pub fn scan_cache_blocking(dirs: &[PathBuf], installed: &HashMap<String, String>
                 path,
                 size: meta.len(),
             };
-            // The same package version can be cached for several
-            // architectures (e.g. x86_64 and x86_64_v4 on CachyOS): keep one.
+
             entries.entry((name, version)).or_insert(entry);
         }
     }
@@ -398,8 +371,6 @@ pub fn scan_cache_blocking(dirs: &[PathBuf], installed: &HashMap<String, String>
     }
 }
 
-/// Parse `name-version-pkgrel-arch.pkg.tar.*` into
-/// `(name, version-pkgrel, arch)`.
 pub fn parse_cache_filename(file_name: &str) -> Option<(String, String, String)> {
     let pkg_pos = file_name.find(".pkg.tar")?;
     let stem = &file_name[..pkg_pos];
@@ -418,7 +389,6 @@ pub fn parse_cache_filename(file_name: &str) -> Option<(String, String, String)>
     ))
 }
 
-/// Path of the package cache tarball if it is present locally.
 pub fn cache_path_for(cache_dirs: &[PathBuf], file_name: &str) -> Option<PathBuf> {
     cache_dirs
         .iter()
@@ -426,12 +396,10 @@ pub fn cache_path_for(cache_dirs: &[PathBuf], file_name: &str) -> Option<PathBuf
         .find(|path| path.is_file())
 }
 
-/// True when the path points at a local file we can copy instead of download.
 pub fn file_url_path(url: &str) -> Option<PathBuf> {
     url.strip_prefix("file://").map(PathBuf::from)
 }
 
-/// Is `path` on a local filesystem?
 pub fn is_local_path(path: &Path) -> bool {
     path.exists()
 }
@@ -454,7 +422,7 @@ extra cowsay 3.8.4-1
         assert_eq!(packages.len(), 5);
         let names: Vec<&str> = packages.iter().map(|p| p.name.as_str()).collect();
         assert_eq!(names, ["bash", "clang", "linux", "linux-cachyos", "cowsay"]);
-        // First occurrence (repo priority) wins.
+
         assert_eq!(packages[0].version, "5.3.20-2");
     }
 

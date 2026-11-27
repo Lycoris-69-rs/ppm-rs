@@ -1,9 +1,9 @@
 # PPM — Powerful Package Manager
 
-TUI-утилита на **Rust + ratatui** для Arch Linux / CachyOS: все пакеты из **всех**
-настроенных репозиториев pacman и из **AUR** сливаются в один плоский список —
-без разделения по репозиториям. Поиск, просмотр метаданных, скачивание пакетов и
-полноценные операции pacman (install / remove / upgrade / downgrade / clean).
+A Rust + ratatui TUI for Arch Linux / CachyOS: every package from **all**
+configured pacman repositories and from the **AUR** is merged into a single flat
+list — no repository grouping. Search, inspect metadata, download packages and
+run full pacman operations (install / remove / upgrade / downgrade / clean).
 
 ```
 ██████  ██████  ██    ██
@@ -12,189 +12,191 @@ TUI-утилита на **Rust + ratatui** для Arch Linux / CachyOS: все �
 ██      ██      ██    ██
 ██      ██      ██    ██
 ```
-*Powerful Package Manager · pacman + AUR, один плоский список*
+*Powerful Package Manager · pacman + AUR in one flat list*
 
-![Главное меню](screenshots/01-main-menu.png)
+![Main menu](screenshots/01-main-menu.png)
 
-## Возможности
+## Features
 
-- **Единый список пакетов.** `pacman -Sl` (core / extra / multilib / cachyos-* …)
-  и полный список AUR (127 000+ имён) объединяются, дубликаты схлопываются,
-  сортировка по имени. Репозитории нигде не группируются; в интерфейсе есть лишь
-  маленькая метка `aur` у пакетов, которых нет в sync-базах.
-- **Поиск.** Фильтр по мере ввода с ранжированием: точное совпадение → префикс →
-  подстрока. Состояние каждого пакета: `installed`, `upgrade`, `newer`,
-  `NOT INSTALLED`.
-- **Панель информации.** Имя, версия (доступная и установленная), описание,
-  размеры, лицензии, зависимости, опциональные зависимости, конфликты, provides,
-  packager/build date; для AUR — мейнтейнер, голоса, popularity, out-of-date date.
-  Метаданные подгружаются лениво (debounce + кэш), панель не тормозит список.
-- **Скачивание.** `Ctrl+D` качает выбранные/помеченные пакеты:
-  - из pacman — по URL, который резолвит `pacman -Spdd` (включая `file://` из кэша);
-  - из AUR — snapshot tarball (`aur.archlinux.org/cgit/aur.git/snapshot/<pkg>.tar.gz`);
-  - прогресс-бар с процентом, байтами, скоростью и счётчиком файлов; `Esc` —
-    отмена с очисткой `.part`.
-- **Установка и обслуживание.** Install / Remove / Update / Downgrade / Clean
-  orphans / Clean cache / System tools. Перед изменяющей командой — диалог
-  подтверждения с точной командной строкой; вывод команд транслируется в
-  оверлей-консоль; после успешной операции данные перезагружаются автоматически.
-- **AUR.** Пакеты ставятся/обновляются через `yay` или `paru` (автоопределение),
-  обновления AUR проверяются для установленных foreign-пакетов.
-- **Монохромный минималистичный UI.** Никаких цветов и заливок фона: текст
-  рисуется цветом терминала по умолчанию, иерархия — только `bold`/`dim` и
-  глифы. Терминальная тема видна как есть.
-- **Асинхронность.** Все внешние вызовы — в tokio-задачах, UI рисуется на 8 fps и
-  не блокируется; параллельные загрузки данных приходят по мере готовности.
-- **Без TTY.** `ppm --snapshot DIR` рендерит все экраны в `.txt`/`.html` (на этом
-  построены скриншоты и визуальные проверки).
+- **One flat package list.** `pacman -Sl` (core / extra / multilib / cachyos-* …)
+  and the complete AUR name list (127,000+ names) are merged, duplicates are
+  collapsed and the result is sorted by name. Repositories are never grouped
+  anywhere; the only trace of origin is a small `aur` tag on packages that are
+  missing from the sync databases.
+- **Search.** Filter-as-you-type with ranking: exact match → prefix → substring.
+  Each package shows its state: `installed`, `upgrade`, `newer`, `NOT INSTALLED`.
+- **Information pane.** Name, available and installed versions, description,
+  sizes, licenses, dependencies, optional dependencies, conflicts, provides,
+  packager/build date; for AUR — maintainer, votes, popularity, out-of-date
+  date. Metadata is fetched lazily (debounce + cache), so the list stays fast.
+- **Downloads.** `Ctrl+D` downloads the selected/marked packages:
+  - pacman packages via the URL resolved by `pacman -Spdd` (including `file://`
+    copies from the package cache);
+  - AUR packages as snapshot tarballs
+    (`aur.archlinux.org/cgit/aur.git/snapshot/<pkg>.tar.gz`);
+  - a progress bar with percent, bytes, speed and file counter; `Esc` cancels
+    and removes the `.part` file.
+- **Install and maintenance.** Install / Remove / Update / Downgrade / Clean
+  orphans / Clean cache / System tools. Every mutating command is shown in a
+  confirmation dialog together with its exact command line; command output is
+  streamed into an overlay console; after a successful operation the data is
+  reloaded automatically.
+- **AUR.** Packages are built and installed through `yay` or `paru`
+  (auto-detected); AUR updates are checked for installed foreign packages.
+- **Monochrome, minimal UI.** No colours and no background fills: text uses the
+  terminal's default foreground/background, hierarchy comes from `bold`/`dim`
+  and glyphs only. The terminal theme shows through as-is.
+- **Fully asynchronous.** All external calls run in tokio tasks, the UI redraws
+  at 8 fps and never blocks; data sources arrive as they become ready.
+- **No TTY required.** `ppm-rs --snapshot DIR` renders every screen into
+  `.txt`/`.html` files (this is how the screenshots and visual checks are made).
 
-## Скриншоты
+## Screenshots
 
 | | |
 |---|---|
-| ![Поиск пакетов](screenshots/02-install-search.png) | ![Обновления](screenshots/06-updates.png) |
-| ![Подтверждение](screenshots/03-confirm.png) | ![Скачивание](screenshots/04-download-progress.png) |
-| ![Даунгрейд](screenshots/07-downgrade.png) | ![System tools](screenshots/08-system-tools.png) |
+| ![Package search](screenshots/02-install-search.png) | ![Updates](screenshots/06-updates.png) |
+| ![Confirmation](screenshots/03-confirm.png) | ![Downloading](screenshots/04-download-progress.png) |
+| ![Downgrade](screenshots/07-downgrade.png) | ![System tools](screenshots/08-system-tools.png) |
 | ![Orphans](screenshots/09-orphans.png) | ![Cache](screenshots/10-cache.png) |
 
-Все 11 экранов лежат в [`screenshots/`](screenshots) (PNG + текстовые дампы).
-Скриншоты отрендерены на нейтральном белом холсте — сам TUI не задаёт ни цвета,
-ни фона и наследует тему терминала.
+All 11 screens live in [`screenshots/`](screenshots) (PNG + text dumps).
+They are rendered on a neutral white canvas — the TUI itself defines neither
+colours nor background and inherits the terminal theme.
 
-## Сборка и запуск
+## Build and run
 
-Требования: Arch-based Linux с pacman (CachyOS подходит идеально), Rust 1.88+.
-Для AUR-операций — `yay` или `paru`.
+Requirements: an Arch-based Linux with pacman (CachyOS works great), Rust 1.88+.
+For AUR operations — `yay` or `paru`.
 
 ```bash
 cargo build --release
-./target/release/ppm
+./target/release/ppm-rs
 ```
 
-Cargo-пакет называется **`ppm-rs`**, исполняемый файл — короткий **`ppm`**
-(так же, как пакет `ripgrep` ставит бинарь `rg`). `cargo install --path .`
-установит команду `ppm`.
+The Cargo package and the executable are both called **`ppm-rs`**.
+`cargo install --path .` installs the `ppm-rs` command.
 
-В этой рабочей копии тулчейн установлен локально и исключён из git:
+In this working copy the toolchain is installed locally and excluded from git:
 
 ```bash
-source .toolchain/env.sh   # RUSTUP_HOME/CARGO_HOME/PATH внутри .toolchain
+source .toolchain/env.sh
 cargo build --release
 ```
 
-Переменные окружения:
+Environment variables:
 
-| Переменная | По умолчанию | Назначение |
+| Variable | Default | Purpose |
 |---|---|---|
-| `PPM_CACHE_DIR` | `$XDG_CACHE_HOME/ppm` → `~/.cache/ppm` (fallback `./.ppm-cache`) | кэш списка AUR |
-| `PPM_DOWNLOADS_DIR` | `./downloads` | куда качать пакеты |
+| `PPM_CACHE_DIR` | `$XDG_CACHE_HOME/ppm` → `~/.cache/ppm` (fallback `./.ppm-cache`) | AUR package list cache |
+| `PPM_DOWNLOADS_DIR` | `./downloads` | where packages are downloaded |
 
-> **Важно про sudo.** TUI не вводит пароль: системные команды запускаются как
-> `sudo -n …`. Перед запуском выполните `sudo -v` в обычном терминале (кэш
-> credentials на сессию), либо запустите PPM от root. Если sudo недоступен,
-> ошибка честно отобразится в консоли операции. AUR-хелперу (`yay`/`paru`) sudo
-> тоже нужен для `pacman -U`.
+> **A note on sudo.** The TUI never asks for a password: system commands run as
+> `sudo -n …`. Before starting, run `sudo -v` in a regular terminal (credentials
+> are cached for the session) or start PPM as root. If sudo is unavailable, the
+> error is shown honestly in the operation console. The AUR helper (`yay`/`paru`)
+> also needs sudo for `pacman -U`.
 
-## Управление
+## Key bindings
 
-### Глобально
+### Global
 
-| Клавиша | Действие |
+| Key | Action |
 |---|---|
-| `↑`/`↓`, `j`/`k` | перемещение по меню |
-| `Enter` | выбрать / выполнить |
-| `Esc` | назад (в браузере — сначала очищает поиск) |
-| `F1` / `?` | помощь |
-| `R` | перечитать данные (меню) |
-| `Ctrl+C` | выход |
+| `↑`/`↓`, `j`/`k` | move through the menu |
+| `Enter` | select / run |
+| `Esc` | go back (in the browser it clears the search first) |
+| `F1` / `?` | help |
+| `R` | reload data (main menu) |
+| `Ctrl+C` | quit |
 
-### Браузер пакетов
+### Package browser
 
-| Клавиша | Действие |
+| Key | Action |
 |---|---|
-| печать | фильтр по единому списку |
-| `Backspace` | удалить символ |
-| `Ctrl+U` | очистить поиск |
-| `Enter` | установить / удалить / обновить / переустановить из кэша |
-| `Ctrl+D` | **скачать** выбранные пакеты в `downloads/` |
-| `Space` | пометить пакет для пакетной операции |
-| `Ctrl+R` | перечитать данные |
+| typing | filter the single package list |
+| `Backspace` | delete a character |
+| `Ctrl+U` | clear the search |
+| `Enter` | install / remove / upgrade / reinstall from cache |
+| `Ctrl+D` | **download** the selected packages into `downloads/` |
+| `Space` | mark a package for a batch operation |
+| `Ctrl+R` | reload data |
 
-### Экраны обслуживания
+### Maintenance screens
 
-| Экран | Клавиши |
+| Screen | Keys |
 |---|---|
-| Remove / Update / Downgrade | как в браузере (`Enter`, `Space`, `Esc`) |
-| Orphans | `Enter` — удалить все найденные сироты, `r` — пересканировать |
-| Cache | `Enter` — `pacman -Sc`, `r` — пересканировать кэш |
+| Remove / Update / Downgrade | same as the browser (`Enter`, `Space`, `Esc`) |
+| Orphans | `Enter` — remove all orphans, `r` — rescan |
+| Cache | `Enter` — `pacman -Sc`, `r` — rescan the cache |
 | System tools | `↑`/`↓` + `Enter`: refresh DB, full upgrade, update AUR, reload, clear AUR cache |
 
-## Как это работает
+## How it works
 
-| Часть | Источник данных |
+| Part | Data source |
 |---|---|
-| список пакетов | `pacman -Sl` (все репо), `pacman -Q`, `pacman -Qm`, `pacman -Qu` |
-| метаданные pacman | `pacman -Si`, fallback `pacman -Qi` для локальных пакетов |
-| URL для скачивания | `pacman -Spdd --print-format %n\|%v\|%l\|%s <pkg>` |
-| список AUR | `https://aur.archlinux.org/packages.gz` (кэш 6 ч, fallback на устаревший кэш) |
-| метаданные AUR | `https://aur.archlinux.org/rpc/v5/info` батчами по 50 |
-| сравнение версий | собственный порт `alpm_pkg_vercmp` (parseEVR + rpmvercmp + «final showdown») |
-| скачивание | `reqwest` + rustls, стриминг, прогресс и отмена |
+| package list | `pacman -Sl` (all repos), `pacman -Q`, `pacman -Qm`, `pacman -Qu` |
+| pacman metadata | `pacman -Si`, fallback `pacman -Qi` for local packages |
+| download URL | `pacman -Spdd --print-format %n\|%v\|%l\|%s <pkg>` |
+| AUR list | `https://aur.archlinux.org/packages.gz` (6 h cache, stale-cache fallback) |
+| AUR metadata | `https://aur.archlinux.org/rpc/v5/info` in batches of 50 |
+| version comparison | own port of `alpm_pkg_vercmp` (parseEVR + rpmvercmp + final showdown) |
+| downloads | `reqwest` + rustls, streaming, progress and cancellation |
 
-Все вызовы pacman идут с `LC_ALL=C`, чтобы парсинг был стабильным. Команды
-запускаются без TTY (`stdin = null`, `kill_on_drop`), поэтому TUI не может
-зависнуть из-за интерактивного вопроса; подтверждения спрашивает сам PPM.
+All pacman calls run with `LC_ALL=C` for stable parsing. Commands are executed
+without a TTY (`stdin = null`, `kill_on_drop`), so the TUI cannot hang on an
+interactive question; confirmations are asked by PPM itself.
 
-## Тесты и проверки
+## Tests and checks
 
 ```bash
-cargo test                 # 23 unit-теста: парсеры, vercmp vs системный vercmp, фильтр, app-state
-cargo clippy --all-targets # чисто
-python3 scripts/pty-smoke.py          # end-to-end в реальном PTY
-./scripts/render-screenshots.sh screenshots   # PNG из snapshot-режима (headless chromium)
+cargo test                 # 23 unit tests: parsers, vercmp vs the system vercmp, filtering, app state
+cargo clippy --all-targets # clean
+python3 scripts/pty-smoke.py                     # end-to-end in a real PTY
+./scripts/render-screenshots.sh screenshots      # PNG from snapshot mode (headless Chromium)
 ```
 
-`scripts/pty-smoke.py` поднимает настоящий TUI в pty, эмулирует экран и проверяет:
-главное меню → браузер → метаданные → диалог установки (отмена) → реальное
-скачивание `cowsay` через `Ctrl+D` → возврат в меню → загрузка AUR-метаданных →
-чистый выход с кодом 0.
+`scripts/pty-smoke.py` boots the real TUI in a pty, emulates the screen and
+verifies: main menu → browser → metadata → install dialog (cancelled) → a real
+`cowsay` download through `Ctrl+D` → back to the menu → AUR metadata loading →
+clean exit with code 0.
 
-## Структура
+## Structure
 
 ```
 src/
-  main.rs         терминал, event loop, CLI (--snapshot/--help/--version)
-  app.rs          состояние, экраны, действия, подтверждения, загрузка данных
-  event.rs        события фоновых задач
-  model.rs        пакеты, статусы, PkgInfo, порт vercmp, форматирование
-  exec.rs         запуск внешних команд, стриминг логов, sudo/хелперы
-  download.rs     HTTP/file-скачивание с прогрессом и отменой
-  snapshot.rs     headless-рендер экранов в txt/html
+  main.rs         terminal, event loop, CLI (--snapshot/--help/--version)
+  app.rs          state, screens, actions, confirmations, data loading
+  event.rs        background task events
+  model.rs        packages, statuses, PkgInfo, vercmp port, formatting
+  exec.rs         external command execution, log streaming, sudo/helper detection
+  download.rs     HTTP/file downloads with progress and cancellation
+  snapshot.rs     headless screen rendering to txt/html
   repo/
-    pacman.rs     запросы и парсеры pacman, сканирование кэша
-    aur.rs        список AUR, RPC, snapshot-URL
+    pacman.rs     pacman queries, parsers, cache scanning
+    aur.rs        AUR list, RPC, snapshot URLs
   ui/
-    mod.rs        тема, футер, общие виджеты
-    menu.rs       главное меню
-    browse.rs     браузер: поиск, список, скроллбар
-    info.rs       панель «Package Information»
+    mod.rs        theme helpers, footer, shared widgets
+    menu.rs       main menu
+    browse.rs     browser: search, list, scrollbar
+    info.rs       "Package Information" pane
     simple.rs     orphans / cache / system tools
     overlay.rs    confirm / operation console / help
 scripts/
-  pty-smoke.py            e2e-проверка в псевдотерминале
+  pty-smoke.py            end-to-end check in a pseudo-terminal
   render-screenshots.sh   html → png
 ```
 
-## Ограничения
+## Limitations
 
-- AUR-скачивание — это **snapshot исходников** (PKGBUILD и файлы), а не собранный
-  пакет; установка AUR идёт через `yay`/`paru`.
-- Обновления AUR проверяются только для уже установленных foreign-пакетов.
-- Скачанные напрямую tarball'ы не проверяются по подписи (подпись/целостность
-  проверяет pacman при установке); для установки используйте `pacman`/helper.
-- «Очистить кэш» выполняет `pacman -Sc --noconfirm` — без интерактивных вопросов.
-- Нет выбора зеркал и ручного редактирования конфигов pacman.
+- An AUR "download" is a **source snapshot** (PKGBUILD and files), not a built
+  package; AUR installation goes through `yay`/`paru`.
+- AUR updates are only checked for already installed foreign packages.
+- Directly downloaded tarballs are not signature-verified (pacman verifies
+  signatures/integrity when installing); use `pacman`/the helper to install.
+- "Clean cache" runs `pacman -Sc --noconfirm` without interactive questions.
+- No mirror selection and no manual pacman config editing.
 
-## Лицензия
+## License
 
 MIT.

@@ -1,6 +1,3 @@
-//! The main menu, following the layout sketch: ASCII brand on top, a flat list
-//! of actions, and a system overview column on the right.
-
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};
@@ -120,7 +117,6 @@ fn draw_brand(frame: &mut Frame, app: &App, area: Rect) {
         text_area,
     );
 
-    // Thin separator under the brand.
     let separator_y = area.y + 7;
     if separator_y < area.bottom() {
         frame.render_widget(

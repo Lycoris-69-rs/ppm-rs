@@ -1,6 +1,3 @@
-//! The flat package browser: search field on top, package list on the left,
-//! package information on the right.
-
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};

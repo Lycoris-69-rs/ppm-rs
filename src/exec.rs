@@ -1,6 +1,3 @@
-//! Running external programs (pacman, sudo, yay, ...) and streaming their
-//! output into the TUI log without ever handing them a TTY.
-
 use std::path::PathBuf;
 use std::process::Stdio;
 
@@ -11,7 +8,6 @@ use tokio_util::sync::CancellationToken;
 
 use crate::event::AppEvent;
 
-/// A command line that PPM is about to run.
 #[derive(Debug, Clone)]
 pub struct CmdSpec {
     pub program: String,
@@ -29,7 +25,6 @@ impl CmdSpec {
         }
     }
 
-    /// Prefix with `sudo -n` unless PPM already runs as root.
     pub fn privileged(
         program: impl Into<String>,
         args: impl IntoIterator<Item = impl Into<String>>,
@@ -48,7 +43,6 @@ impl CmdSpec {
         }
     }
 
-    /// Shell-like rendering for the confirmation dialog and log header.
     pub fn display(&self) -> String {
         let mut out = self.program.clone();
         for arg in &self.args {
@@ -71,7 +65,6 @@ pub enum RunOutcome {
     Failed(String),
 }
 
-/// Run a command, streaming merged stdout/stderr lines as [`AppEvent::OpLine`].
 pub async fn run_streamed(
     spec: &CmdSpec,
     tx: &UnboundedSender<AppEvent>,
@@ -169,7 +162,6 @@ pub struct Captured {
     pub stderr: String,
 }
 
-/// Run a command to completion and capture its output.
 pub async fn capture(program: &str, args: &[&str]) -> Result<Captured, String> {
     let output = Command::new(program)
         .args(args)
@@ -187,14 +179,11 @@ pub async fn capture(program: &str, args: &[&str]) -> Result<Captured, String> {
     })
 }
 
-/// Like [`capture`], but accepts a non-zero exit status (used for queries
-/// such as `pacman -Qtdq` which exits 1 when there is simply nothing to show).
 pub async fn capture_query(program: &str, args: &[&str]) -> Result<Captured, String> {
     capture(program, args).await
 }
 
 pub fn is_root() -> bool {
-    // Reading /proc avoids pulling in libc just for geteuid().
     let Ok(status) = std::fs::read_to_string("/proc/self/status") else {
         return false;
     };
@@ -206,7 +195,6 @@ pub fn is_root() -> bool {
     false
 }
 
-/// Look up an executable in `$PATH`.
 pub fn find_in_path(name: &str) -> Option<PathBuf> {
     let path = std::env::var_os("PATH")?;
     for dir in std::env::split_paths(&path) {
@@ -222,7 +210,6 @@ pub fn have_sudo() -> bool {
     is_root() || find_in_path("sudo").is_some()
 }
 
-/// The preferred AUR helper, if one is installed.
 pub fn aur_helper() -> Option<String> {
     for helper in ["yay", "paru"] {
         if find_in_path(helper).is_some() {

@@ -1,6 +1,3 @@
-//! Streaming downloads (pacman package URLs, AUR snapshot tarballs and local
-//! cache copies) with progress reporting and cooperative cancellation.
-
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
@@ -55,9 +52,6 @@ impl Downloader {
         Self { client }
     }
 
-    /// Download a single URL into `dest_dir`.
-    ///
-    /// `size_hint` is used when the server does not announce a content length.
     pub async fn fetch(
         &self,
         url: &str,
@@ -278,10 +272,9 @@ async fn copy_local(
     }
 }
 
-/// Derive a safe local file name from a URL path.
 pub fn file_name_from_url(url: &str) -> String {
     let path = url.split(['?', '#']).next().unwrap_or(url);
-    // Drop the scheme and authority so "https://example.com/" has no filename.
+
     let path = match path.find("://") {
         Some(index) => {
             let rest = &path[index + 3..];

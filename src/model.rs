@@ -1,15 +1,6 @@
-//! Core domain types shared by the repository layer and the UI.
-//!
-//! PPM deliberately has a single flat namespace: every package from every
-//! pacman repository and from the AUR is merged into one list.  The only
-//! per-package origin marker that survives is [`Source`], which is used to
-//! decide *how* a package is fetched/installed, never to split the list.
-
 use std::cmp::Ordering;
 use std::path::PathBuf;
 
-/// Where a package comes from.  Not a repository: all pacman repositories are
-/// collapsed into [`Source::Pacman`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum Source {
     #[default]
@@ -30,12 +21,10 @@ impl Source {
     }
 }
 
-/// A single row in one of the flat package lists.
 #[derive(Debug, Clone)]
 pub struct Package {
     pub name: String,
-    /// Version advertised by the source.  Empty for AUR rows until the RPC
-    /// metadata for the package has been fetched.
+
     pub version: String,
     pub source: Source,
 }
@@ -50,18 +39,14 @@ impl Package {
     }
 }
 
-/// Availability/installation state of a package, derived on demand so that it
-/// stays correct while data is still being loaded.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
-    /// Known only for installed packages when the candidate version is unknown.
     Unknown,
     NotInstalled,
     Installed,
-    /// A newer version than the installed one is available.
+
     Upgrade,
-    /// The installed version is newer than the one available (e.g. cached or
-    /// downgraded package).
+
     Newer,
 }
 
@@ -77,10 +62,6 @@ impl Status {
     }
 }
 
-/// Compute the installation status of a package.
-///
-/// `available` is `None`/empty when the source has not told us its version
-/// yet (AUR rows before their metadata has been fetched).
 pub fn status_for(available: Option<&str>, installed: Option<&str>) -> Status {
     let available = available.filter(|v| !v.is_empty());
     match (available, installed) {
@@ -94,7 +75,6 @@ pub fn status_for(available: Option<&str>, installed: Option<&str>) -> Status {
     }
 }
 
-/// A package that has an upgrade available.
 #[derive(Debug, Clone)]
 pub struct UpdateEntry {
     pub name: String,
@@ -103,7 +83,6 @@ pub struct UpdateEntry {
     pub source: Source,
 }
 
-/// A package tarball sitting in the pacman cache (used by the downgrade view).
 #[derive(Debug, Clone)]
 pub struct CacheEntry {
     pub name: String,
@@ -114,8 +93,6 @@ pub struct CacheEntry {
     pub installed: bool,
 }
 
-/// Everything the info pane can show for a package.  Filled either from
-/// `pacman -Si` or from the AUR RPC.
 #[derive(Debug, Clone, Default)]
 pub struct PkgInfo {
     pub name: String,
@@ -134,17 +111,16 @@ pub struct PkgInfo {
     pub installed_size: Option<String>,
     pub packager: Option<String>,
     pub build_date: Option<String>,
-    /// AUR-only metadata.
+
     pub maintainer: Option<String>,
     pub votes: Option<u64>,
     pub popularity: Option<f64>,
-    /// AUR out-of-date date (`YYYY-MM-DD`), when flagged.
+
     pub out_of_date: Option<String>,
-    /// Path component for the AUR snapshot tarball (`URLPath`), when known.
+
     pub url_path: Option<String>,
 }
 
-/// Statically known facts about the host, shown on the "System Tools" screen.
 #[derive(Debug, Clone, Default)]
 pub struct SystemInfo {
     pub pacman_version: String,
@@ -155,12 +131,6 @@ pub struct SystemInfo {
     pub is_root: bool,
 }
 
-// ---------------------------------------------------------------------------
-// alpm version comparison
-// ---------------------------------------------------------------------------
-
-/// Compare two alpm version strings exactly like `vercmp(8)` / libalpm's
-/// `alpm_pkg_vercmp` (pacman 7.x).
 pub fn vercmp(a: &str, b: &str) -> Ordering {
     if a == b {
         return Ordering::Equal;
@@ -180,10 +150,6 @@ pub fn vercmp(a: &str, b: &str) -> Ordering {
     ret.cmp(&0)
 }
 
-/// Split `[epoch:]version[-pkgrel]`, mirroring pacman's `parseEVR`.
-///
-/// The epoch defaults to `"0"`; a release is only present when the string
-/// contains a `-`, and may be empty (`"1.0-"` -> release `""`).
 fn parse_evr(s: &str) -> (&str, &str, Option<&str>) {
     let digits = s.bytes().take_while(|b| b.is_ascii_digit()).count();
     let rest = &s[digits..];
@@ -209,8 +175,6 @@ fn parse_evr(s: &str) -> (&str, &str, Option<&str>) {
     }
 }
 
-/// Port of libalpm's `rpmvercmp`, the segment-wise comparison that makes
-/// `1.0rc1 < 1.0`, `1.0.1 > 1.0` and `1.0-1 < 1.0-2` behave like pacman.
 fn rpmvercmp(a: &str, b: &str) -> i32 {
     if a == b {
         return 0;
@@ -227,11 +191,11 @@ fn rpmvercmp(a: &str, b: &str) -> i32 {
         while two < bb.len() && !bb[two].is_ascii_alphanumeric() {
             two += 1;
         }
-        // End of either string: stop comparing segments.
+
         if one >= ab.len() || two >= bb.len() {
             break;
         }
-        // Different separator lengths between the previous and current segment.
+
         if (one - ptr1) != (two - ptr2) {
             return if one - ptr1 < two - ptr2 { -1 } else { 1 };
         }
@@ -258,9 +222,6 @@ fn rpmvercmp(a: &str, b: &str) -> i32 {
         let seg1 = &ab[one..ptr1];
         let seg2 = &bb[two..ptr2];
 
-        // The first segment is guaranteed non-empty; the second one may be
-        // empty when the two segments are of different types (numeric always
-        // beats alpha).
         if seg1.is_empty() {
             return -1;
         }
@@ -300,8 +261,6 @@ fn rpmvercmp(a: &str, b: &str) -> i32 {
         return 0;
     }
 
-    // "Final showdown": a remaining alpha string must not beat an empty
-    // string, which makes `1.0rc1` older than `1.0` while `1.0+1` is newer.
     let one_alpha = !one_done && ab[one].is_ascii_alphabetic();
     let two_alpha = !two_done && bb[two].is_ascii_alphabetic();
     if (one_done && !two_alpha) || one_alpha {
@@ -316,7 +275,6 @@ fn trim_zeros(s: &[u8]) -> &[u8] {
     &s[start..]
 }
 
-/// Human readable byte size, e.g. `151.2 MiB`.
 pub fn format_bytes(bytes: u64) -> String {
     const UNITS: [&str; 6] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
     let mut value = bytes as f64;
@@ -346,8 +304,6 @@ mod tests {
 
     #[test]
     fn version_comparison_matches_alpm_expectations() {
-        // Table checked against pacman's vercmp(8); if the binary is present
-        // in the environment it is used as the oracle below as well.
         let cases: &[(&str, &str, i32)] = &[
             ("1.0", "1.0", 0),
             ("1.0-1", "1.0-1", 0),
@@ -400,8 +356,6 @@ mod tests {
 
     #[test]
     fn vercmp_binary_oracle_if_available() {
-        // Compare our port against the real pacman `vercmp` for a broad set of
-        // version pairs built from the local package databases.
         let pairs = oracle_pairs();
         if pairs.is_empty() {
             eprintln!("vercmp oracle skipped: no pacman database available");

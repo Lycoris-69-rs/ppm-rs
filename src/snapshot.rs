@@ -1,10 +1,3 @@
-//! Headless rendering used to preview/verify the TUI without a terminal.
-//!
-//! `ppm --snapshot <dir>` loads real data, drives the app through its screens
-//! with scripted events, and writes one `.txt` and one `.html` file per screen.
-//! The HTML files can be turned into PNG screenshots with a headless browser
-//! (see `scripts/render-screenshots.sh`).
-
 use std::fmt::Write as _;
 use std::path::Path;
 use std::time::Duration;
@@ -31,7 +24,10 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     let client = aur::client().map_err(anyhow::Error::msg)?;
     let paths = Paths::discover();
 
-    eprintln!("ppm snapshot: reading pacman databases…");
+    eprintln!(
+        "{} snapshot: reading pacman databases…",
+        env!("CARGO_PKG_NAME")
+    );
     let packages = pacman::list_available().await.unwrap_or_default();
     let installed = pacman::list_installed().await.unwrap_or_default();
     let updates = pacman::list_updates().await.unwrap_or_default();
@@ -42,7 +38,10 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     let cache_size = cache_scan.total_size;
     let system = pacman::system_info().await;
 
-    eprintln!("ppm snapshot: loading AUR package list…");
+    eprintln!(
+        "{} snapshot: loading AUR package list…",
+        env!("CARGO_PKG_NAME")
+    );
     let aur_names = match tokio::time::timeout(
         Duration::from_secs(45),
         aur::load_names(&client, &paths.cache_dir),
@@ -56,7 +55,6 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
     let mut app = App::new(tx, paths, client.clone());
 
-    // Inject the data we just loaded instead of starting the async loaders.
     app.handle_event(AppEvent::Installed(installed));
     app.handle_event(AppEvent::PacmanPackages(packages));
     app.handle_event(AppEvent::AurNames(aur_names));
@@ -67,16 +65,13 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     app.handle_event(AppEvent::SystemInfo(system));
     app.handle_event(AppEvent::Tick);
 
-    // 1. Main menu.
     render(&mut app, out_dir, "01-main-menu")?;
 
-    // 2. Install browser, searching for "linux".
     press(&mut app, KeyCode::Enter);
     type_text(&mut app, "linux");
     fetch_info(&mut app, &client).await;
     render(&mut app, out_dir, "02-install-search")?;
 
-    // 3. Confirmation dialog for installing the selected package.
     if let Some(row) = app.browse.current() {
         let name = row.name.clone();
         let source = row.source;
@@ -96,7 +91,6 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     render(&mut app, out_dir, "03-confirm")?;
     app.confirm = None;
 
-    // 4. Download progress overlay.
     let mut operation = Operation::new("Downloading 2 package(s)");
     operation.status = "downloading packages".to_string();
     app.overlay = Some(operation);
@@ -119,7 +113,6 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     }));
     render(&mut app, out_dir, "04-download-progress")?;
 
-    // 5. Command console after a finished install.
     let operation = Operation::new("Installing 1 package(s)");
     app.overlay = Some(operation);
     for (text, error) in [
@@ -156,38 +149,32 @@ pub async fn run(out_dir: &Path) -> Result<()> {
     render(&mut app, out_dir, "05-install-console")?;
     app.overlay = None;
 
-    // 6. Updates screen.
     back_to_menu(&mut app);
     app.menu_index = 2;
     press(&mut app, KeyCode::Enter);
     fetch_info(&mut app, &client).await;
     render(&mut app, out_dir, "06-updates")?;
 
-    // 7. Downgrade screen.
     back_to_menu(&mut app);
     app.menu_index = 3;
     press(&mut app, KeyCode::Enter);
     render(&mut app, out_dir, "07-downgrade")?;
 
-    // 8. System tools.
     back_to_menu(&mut app);
     app.menu_index = 6;
     press(&mut app, KeyCode::Enter);
     render(&mut app, out_dir, "08-system-tools")?;
 
-    // 9. Orphans.
     back_to_menu(&mut app);
     app.menu_index = 4;
     press(&mut app, KeyCode::Enter);
     render(&mut app, out_dir, "09-orphans")?;
 
-    // 10. Cache cleanup.
     back_to_menu(&mut app);
     app.menu_index = 5;
     press(&mut app, KeyCode::Enter);
     render(&mut app, out_dir, "10-cache")?;
 
-    // 11. Help overlay on top of the browser.
     back_to_menu(&mut app);
     app.menu_index = 0;
     press(&mut app, KeyCode::Enter);
@@ -217,8 +204,6 @@ fn type_text(app: &mut App, text: &str) {
 }
 
 fn back_to_menu(app: &mut App) {
-    // Leave any overlay/dialog and return to the main menu regardless of the
-    // current filter or screen depth.
     app.overlay = None;
     app.confirm = None;
     app.help_visible = false;

@@ -1,5 +1,3 @@
-//! PPM entry point: terminal lifecycle, event loop and the headless snapshot mode.
-
 use std::io::IsTerminal;
 use std::path::PathBuf;
 use std::process::ExitCode;
@@ -13,6 +11,7 @@ use ppm::repo::{Paths, aur};
 use ppm::ui;
 
 const TICK: Duration = Duration::from_millis(120);
+const PROGRAM: &str = env!("CARGO_PKG_NAME");
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
@@ -22,7 +21,7 @@ fn main() -> ExitCode {
             ExitCode::SUCCESS
         }
         Some("--version" | "-V") => {
-            println!("ppm {}", env!("CARGO_PKG_VERSION"));
+            println!("{PROGRAM} {}", env!("CARGO_PKG_VERSION"));
             ExitCode::SUCCESS
         }
         Some("--snapshot") => {
@@ -33,13 +32,13 @@ fn main() -> ExitCode {
             match run_snapshot(dir) {
                 Ok(()) => ExitCode::SUCCESS,
                 Err(error) => {
-                    eprintln!("ppm: snapshot failed: {error:#}");
+                    eprintln!("{PROGRAM}: snapshot failed: {error:#}");
                     ExitCode::FAILURE
                 }
             }
         }
         Some(unknown) if unknown.starts_with('-') => {
-            eprintln!("ppm: unknown option `{unknown}` (try `ppm --help`)");
+            eprintln!("{PROGRAM}: unknown option `{unknown}` (try `{PROGRAM} --help`)");
             ExitCode::FAILURE
         }
         _ => run_tui(),
@@ -49,15 +48,15 @@ fn main() -> ExitCode {
 fn print_help() {
     println!(
         "\
-ppm {version} — Powerful Package Manager
+{program} {version} — Powerful Package Manager
 
 A ratatui TUI for pacman repositories and the AUR, merged into one flat list.
 
 USAGE:
-    ppm                 start the interactive TUI
-    ppm --snapshot DIR  render every screen to DIR as .txt/.html (no TTY needed)
-    ppm --help          show this help
-    ppm --version       show the version
+    {program}                 start the interactive TUI
+    {program} --snapshot DIR  render every screen to DIR as .txt/.html (no TTY needed)
+    {program} --help          show this help
+    {program} --version       show the version
 
 ENVIRONMENT:
     PPM_CACHE_DIR       where the AUR package list is cached
@@ -72,9 +71,10 @@ KEYS:
 
 NOTES:
     System changes run through `sudo -n`.  Run `sudo -v` in a terminal first
-    (or start ppm as root) so the password is cached for the session.
+    (or start {program} as root) so the password is cached for the session.
     AUR packages are built and installed with yay or paru.
 ",
+        program = PROGRAM,
         version = env!("CARGO_PKG_VERSION")
     );
 }
@@ -90,8 +90,8 @@ fn run_snapshot(dir: PathBuf) -> anyhow::Result<()> {
 fn run_tui() -> ExitCode {
     if !std::io::stdout().is_terminal() || !std::io::stdin().is_terminal() {
         eprintln!(
-            "ppm is an interactive TUI and needs a terminal.\n\
-             Try `ppm --help`, or `ppm --snapshot DIR` for headless previews."
+            "{PROGRAM} is an interactive TUI and needs a terminal.\n\
+             Try `{PROGRAM} --help`, or `{PROGRAM} --snapshot DIR` for headless previews."
         );
         return ExitCode::FAILURE;
     }
@@ -103,7 +103,7 @@ fn run_tui() -> ExitCode {
     {
         Ok(runtime) => runtime,
         Err(error) => {
-            eprintln!("ppm: could not start async runtime: {error}");
+            eprintln!("{PROGRAM}: could not start async runtime: {error}");
             return ExitCode::FAILURE;
         }
     };
@@ -112,7 +112,7 @@ fn run_tui() -> ExitCode {
         let client = match aur::client() {
             Ok(client) => client,
             Err(error) => {
-                eprintln!("ppm: {error}");
+                eprintln!("{PROGRAM}: {error}");
                 return 1;
             }
         };
@@ -121,7 +121,6 @@ fn run_tui() -> ExitCode {
         let mut app = App::new(tx.clone(), Paths::discover(), client);
         app.start_loading();
 
-        // Dedicated thread for terminal input; crossterm's read() is blocking.
         std::thread::spawn(move || {
             while let Ok(event) = crossterm::event::read() {
                 if tx.send(AppEvent::Input(event)).is_err() {
@@ -150,7 +149,7 @@ fn run_tui() -> ExitCode {
             }
             if let Err(error) = terminal.draw(|frame| ui::draw(frame, &mut app)) {
                 ratatui::restore();
-                eprintln!("ppm: rendering failed: {error}");
+                eprintln!("{PROGRAM}: rendering failed: {error}");
                 return 1;
             }
         }

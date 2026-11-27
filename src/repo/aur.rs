@@ -1,6 +1,3 @@
-//! AUR support: the full package-name list (fetched once and cached locally),
-//! package metadata over the RPC, and snapshot tarball URLs for downloading.
-
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime};
 
@@ -12,10 +9,9 @@ use crate::model::{PkgInfo, Source, UpdateEntry, vercmp};
 pub const RPC_BASE: &str = "https://aur.archlinux.org/rpc/v5";
 pub const PACKAGES_URL: &str = "https://aur.archlinux.org/packages.gz";
 pub const AUR_ROOT: &str = "https://aur.archlinux.org";
-/// How often the cached AUR name list is refreshed.
+
 pub const NAMES_MAX_AGE: Duration = Duration::from_secs(6 * 60 * 60);
-/// The RPC accepts a limited number of `arg[]` per request; stay well below
-/// the URL length limit.
+
 pub const RPC_BATCH: usize = 50;
 
 pub fn client() -> Result<reqwest::Client, String> {
@@ -33,7 +29,6 @@ pub struct NamesLoad {
     pub from_cache: bool,
 }
 
-/// Load the AUR package name list, using a 6h local cache when possible.
 pub async fn load_names(client: &reqwest::Client, cache_dir: &Path) -> Result<NamesLoad, String> {
     let cache_path = cache_dir.join("aur-packages.gz");
     let fresh = cache_path
@@ -157,7 +152,6 @@ struct AurPackage {
     url_path: Option<String>,
 }
 
-/// Fetch metadata for a single AUR package.
 pub async fn info(client: &reqwest::Client, name: &str) -> Result<PkgInfo, String> {
     let mut infos = fetch_infos(client, std::slice::from_ref(&name.to_string())).await?;
     infos
@@ -165,7 +159,6 @@ pub async fn info(client: &reqwest::Client, name: &str) -> Result<PkgInfo, Strin
         .ok_or_else(|| format!("AUR has no package named `{name}`"))
 }
 
-/// Fetch metadata for up to [`RPC_BATCH`] packages per request, in batches.
 pub async fn fetch_infos(
     client: &reqwest::Client,
     names: &[String],
@@ -217,9 +210,6 @@ fn aur_to_info(pkg: AurPackage) -> PkgInfo {
     }
 }
 
-/// Compare installed foreign packages with their AUR versions.
-///
-/// Returns only packages whose AUR version is greater than the installed one.
 pub async fn updates(
     client: &reqwest::Client,
     foreign: &std::collections::HashMap<String, String>,
@@ -246,7 +236,6 @@ pub async fn updates(
     Ok(updates)
 }
 
-/// Build the AUR snapshot tarball URL used by "download".
 pub fn snapshot_url(name: &str, url_path: Option<&str>) -> String {
     match url_path {
         Some(path) if path.starts_with('/') => format!("{AUR_ROOT}{path}"),
@@ -254,9 +243,7 @@ pub fn snapshot_url(name: &str, url_path: Option<&str>) -> String {
     }
 }
 
-/// Convert a Unix timestamp to a `YYYY-MM-DD` date (UTC).
 pub fn format_timestamp(timestamp: u64) -> String {
-    // Howard Hinnant's civil_from_days algorithm.
     let days = (timestamp / 86_400) as i64;
     let z = days + 719_468;
     let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
@@ -271,12 +258,10 @@ pub fn format_timestamp(timestamp: u64) -> String {
     format!("{y:04}-{m:02}-{d:02}")
 }
 
-/// AUR page URL for a package.
 pub fn package_url(name: &str) -> String {
     format!("{AUR_ROOT}/packages/{name}")
 }
 
-/// Cached AUR name list path (kept public for the "System Tools" screen).
 pub fn cache_path(cache_dir: &Path) -> PathBuf {
     cache_dir.join("aur-packages.gz")
 }

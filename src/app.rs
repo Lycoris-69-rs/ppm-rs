@@ -1,8 +1,3 @@
-//! Application state machine: screens, data loading, actions and overlays.
-//!
-//! The app is UI-agnostic: it consumes [`AppEvent`]s (input, ticks and
-//! background results) and exposes state for the ratatui layer to draw.
-
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
@@ -171,8 +166,7 @@ pub enum RowKind {
 pub struct Row {
     pub name: String,
     pub source: Source,
-    /// Version advertised by the source.  Empty for AUR rows until metadata is
-    /// loaded; the UI then falls back to `Data::aur_versions`.
+
     pub version: String,
     pub installed: Option<String>,
     pub kind: RowKind,
@@ -303,7 +297,6 @@ impl BrowseState {
         if query.is_empty() {
             self.filtered.extend(0..self.rows.len());
         } else {
-            // Rank: exact match, prefix match, then plain substring match.
             let mut exact = Vec::new();
             let mut prefix = Vec::new();
             let mut contains = Vec::new();
@@ -321,7 +314,7 @@ impl BrowseState {
             self.filtered.extend(prefix);
             self.filtered.extend(contains);
         }
-        // A changed search always starts from the best match.
+
         self.selected = 0;
         self.offset = 0;
     }
@@ -508,11 +501,6 @@ impl App {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Loading
-    // ------------------------------------------------------------------
-
-    /// Kick off the initial data loads (and every later full reload).
     pub fn start_loading(&mut self) {
         let tx = self.tx.clone();
         let tx_aur = self.tx.clone();
@@ -571,7 +559,6 @@ impl App {
             }
         });
 
-        // A cheap overview load for the main menu / system tools screens.
         let tx_overview = self.tx.clone();
         tokio::spawn(async move {
             let dirs = pacman::cache_dirs().await;
@@ -691,10 +678,6 @@ impl App {
         });
     }
 
-    // ------------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------------
-
     pub fn row_version<'a>(&'a self, row: &'a Row) -> Option<&'a str> {
         match &row.kind {
             RowKind::Update { new, .. } => Some(new),
@@ -775,8 +758,6 @@ impl App {
         let client = self.client.clone();
         tokio::spawn(async move {
             let result = match source {
-                // A package that is installed but gone from the sync databases
-                // can still be described by `pacman -Qi`.
                 Source::Pacman => match pacman::info(&name).await {
                     Ok(info) => Ok(info),
                     Err(error) => pacman::installed_info(&name).await.map_err(|_| error),
@@ -796,10 +777,6 @@ impl App {
             }
         });
     }
-
-    // ------------------------------------------------------------------
-    // Event handling
-    // ------------------------------------------------------------------
 
     pub fn handle_event(&mut self, event: AppEvent) {
         self.dirty = true;
@@ -952,10 +929,6 @@ impl App {
             self.rebuild_rows();
         }
     }
-
-    // ------------------------------------------------------------------
-    // Rows / filtering
-    // ------------------------------------------------------------------
 
     fn rebuild_packages(&mut self) {
         let mut merged: Vec<Package> = self.data.pacman_packages.clone();
@@ -1113,10 +1086,6 @@ impl App {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Input
-    // ------------------------------------------------------------------
-
     fn handle_input(&mut self, event: Event) {
         let Event::Key(key) = event else {
             return;
@@ -1248,7 +1217,6 @@ impl App {
             self.load_cache();
         }
         if mode == BrowseMode::Install && !self.data.pacman_loaded && !self.data.loading_pacman {
-            // Nothing loaded yet: make sure the loaders are running.
             self.start_loading();
         }
         self.screen = Screen::Browse;
@@ -1417,10 +1385,6 @@ impl App {
             _ => {}
         }
     }
-
-    // ------------------------------------------------------------------
-    // Actions
-    // ------------------------------------------------------------------
 
     fn selected_targets(&self) -> Vec<(String, Source)> {
         self.browse
@@ -2054,8 +2018,6 @@ impl App {
     }
 }
 
-/// Append command(s) for `items`, splitting into batches so that very large
-/// selections cannot exceed the kernel's argument size limit.
 fn push_batched(
     specs: &mut Vec<CmdSpec>,
     program: &str,

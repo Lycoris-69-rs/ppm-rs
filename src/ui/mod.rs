@@ -1,9 +1,3 @@
-//! Rendering: a small design system shared by every screen.
-//!
-//! PPM is deliberately monochrome: the palette below maps every colour role to
-//! the terminal's *default* foreground/background, and no widget paints a
-//! background. Hierarchy comes from bold/dim modifiers and from glyphs only.
-
 pub mod browse;
 pub mod info;
 pub mod menu;
@@ -18,15 +12,10 @@ use ratatui::widgets::{Block, BorderType, Borders, Paragraph};
 
 use crate::app::{App, BrowseMode, Screen};
 
-// PPM uses no palette: text is drawn with the terminal's default foreground on
-// its default background.  Emphasis is expressed with the bold/dim modifiers.
-
-/// Bold text — the only emphasis used by the interface.
 pub fn emphasis() -> Style {
     Style::default().add_modifier(Modifier::BOLD)
 }
 
-/// De-emphasised (dim) text for hints and secondary metadata.
 pub fn secondary() -> Style {
     Style::default().add_modifier(Modifier::DIM)
 }
@@ -69,7 +58,6 @@ pub fn footer_hints(hints: Vec<Span<'static>>) -> Line<'static> {
     Line::from(spans)
 }
 
-/// Draw the global background and dispatch to the active screen.
 pub fn draw(frame: &mut Frame, app: &mut App) {
     let area = frame.area();
     frame.render_widget(Block::default().style(base_style()), area);
@@ -113,7 +101,6 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     }
 }
 
-/// Shared two-line footer with key hints, loading state and toasts.
 pub fn draw_footer(
     frame: &mut Frame,
     app: &App,
@@ -231,7 +218,6 @@ pub fn centered_rect(width_percent: u16, height_percent: u16, area: Rect) -> Rec
     vertical[1]
 }
 
-/// Small colored tag used in lists and the info pane.
 pub fn source_tag(source: crate::model::Source) -> Span<'static> {
     match source {
         crate::model::Source::Aur => {

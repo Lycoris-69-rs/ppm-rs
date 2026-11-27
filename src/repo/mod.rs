@@ -1,14 +1,8 @@
-//! Repository layer: pacman queries and the AUR client.
-
 pub mod aur;
 pub mod pacman;
 
 use std::path::PathBuf;
 
-/// Filesystem locations used by PPM.  Paths can be overridden with
-/// `PPM_CACHE_DIR` / `PPM_DOWNLOADS_DIR`; otherwise XDG-style defaults are
-/// used, falling back to a project-local directory when the home directory is
-/// not writable (useful in sandboxes and containers).
 #[derive(Debug, Clone)]
 pub struct Paths {
     pub cache_dir: PathBuf,

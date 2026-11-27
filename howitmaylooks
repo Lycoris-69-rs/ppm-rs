@@ -1,4 +1,4 @@
-//main меню
+//main menu
 
 ____  ____  __  __     ____  ___ 
 (  _ \(  _ \(  \/  )___(  _ \/ __)   Powerful Package Manager
@@ -12,14 +12,14 @@ Update Packages
 Downgrade Packages
 Clean Orphans
 Clean Package Cache
-System Tools //настройки пакмана
+System Tools //pacman settings
 Exit
 
-//меню инсталяции
+//install menu
 
-//сверху меню для ввода в поиск
-//справа информация о пакете
-//ниже этого меню пакеты
+//search input at the top
+//package information on the right
+//package list below this menu
 
 > linux
 ------------

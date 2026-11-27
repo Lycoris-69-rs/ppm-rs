@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Render the HTML snapshots produced by `ppm --snapshot` into PNG images using
+# Render the HTML snapshots produced by `ppm-rs --snapshot` into PNG images using
 # a headless Chromium/Chrome.  Usage: scripts/render-screenshots.sh [DIR]
 set -euo pipefail
 dir="${1:-screenshots}"

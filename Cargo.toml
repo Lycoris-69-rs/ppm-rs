@@ -7,7 +7,7 @@ description = "PPM - Powerful Package Manager: a ratatui TUI front-end for pacma
 license = "MIT"
 
 [[bin]]
-name = "ppm"
+name = "ppm-rs"
 path = "src/main.rs"
 
 [profile.release]

@@ -1,5 +1,3 @@
-//! The "Package Information" pane shown on the right of the browser.
-
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Rect};
 use ratatui::style::{Modifier, Style};
@@ -239,7 +237,7 @@ fn wrap_words(text: &str, width: usize, max_lines: usize) -> Vec<String> {
     let mut current = String::new();
     for word in text.split_whitespace() {
         let mut word = word.to_string();
-        // Hard-split a single word that is longer than the available width.
+
         while word.chars().count() > width {
             if !current.is_empty() {
                 lines.push(std::mem::take(&mut current));
