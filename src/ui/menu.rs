@@ -73,16 +73,9 @@ fn draw_brand(frame: &mut Frame, app: &App, area: Rect) {
         width: area.width.min(26),
         height: 5,
     };
-    let colors = [ACCENT, ACCENT, ACCENT, ACCENT2, ACCENT2];
     let art_lines: Vec<Line> = BRAND
         .iter()
-        .zip(colors)
-        .map(|(line, color)| {
-            Line::from(Span::styled(
-                *line,
-                Style::default().fg(color).add_modifier(Modifier::BOLD),
-            ))
-        })
+        .map(|line| Line::from(Span::styled(*line, Style::default())))
         .collect();
     frame.render_widget(
         Paragraph::new(art_lines).style(Style::default().bg(BG)),
@@ -205,13 +198,7 @@ fn draw_menu(frame: &mut Frame, app: &mut App, area: Rect) {
         .collect();
 
     let list = List::new(items)
-        .style(Style::default().bg(BG))
-        .highlight_style(
-            Style::default()
-                .bg(PANEL)
-                .fg(ACCENT)
-                .add_modifier(Modifier::BOLD),
-        )
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("▸");
 
     let mut state = ListState::default();
@@ -261,11 +248,11 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
     lines.push(Line::from(""));
     lines.push(Line::from(Span::styled(
         "TIP",
-        Style::default().fg(ACCENT2).add_modifier(Modifier::BOLD),
+        Style::default().add_modifier(Modifier::BOLD),
     )));
     lines.push(Line::from(Span::styled(
         "Install opens the flat package browser: type to search, Enter to install, Ctrl+D to only download.",
-        Style::default().fg(DIM),
+        Style::default().add_modifier(Modifier::DIM),
     )));
     lines.push(Line::from(""));
     let missing = if app.data.loading_pacman || app.data.loading_aur {
@@ -295,7 +282,7 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
 
 fn kv(key: &str, value: &str) -> Line<'static> {
     Line::from(vec![
-        Span::styled(format!("{key:<18}"), Style::default().fg(DIM)),
-        Span::styled(value.to_string(), Style::default().fg(FG)),
+        Span::styled(format!("{key:<18}"), Style::default().add_modifier(Modifier::DIM)),
+        Span::styled(value.to_string(), Style::default()),
     ])
 }

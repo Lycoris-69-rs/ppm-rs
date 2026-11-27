@@ -4,7 +4,7 @@ use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, BorderType, Borders, Clear, Gauge, Paragraph, Wrap};
+use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph, Wrap};
 
 use crate::app::{App, Operation};
 use crate::model::format_bytes;
@@ -152,17 +152,7 @@ pub fn draw_operation(frame: &mut Frame, app: &App, area: Rect) {
 
     draw_operation_status(frame, operation, chunks[0]);
     if let Some(progress) = &operation.progress {
-        let label = progress_label(progress);
-        let gauge = Gauge::default()
-            .gauge_style(
-                Style::default()
-                    .fg(ACCENT)
-                    .bg(ui::BG)
-                    .add_modifier(Modifier::BOLD),
-            )
-            .ratio(progress.fraction())
-            .label(label);
-        frame.render_widget(gauge, chunks[1]);
+        draw_progress(frame, progress, chunks[1]);
     }
     draw_operation_log(frame, operation, chunks[2]);
     draw_operation_hints(frame, operation, chunks[3]);
@@ -221,6 +211,35 @@ fn progress_label(progress: &crate::event::Progress) -> String {
     )
 }
 
+/// Monochrome ASCII progress bar (`[====>      ]`) — no colours or fills.
+fn draw_progress(frame: &mut Frame, progress: &crate::event::Progress, area: Rect) {
+    if area.width == 0 {
+        return;
+    }
+    let width = area.width as usize;
+    let bar_width = 20.min(width.saturating_sub(10)).max(1);
+    let filled = ((progress.fraction() * bar_width as f64).round() as usize).min(bar_width);
+    let mut cells = vec![' '; bar_width];
+    for cell in cells.iter_mut().take(filled) {
+        *cell = '=';
+    }
+    if filled > 0 && filled < bar_width {
+        cells[filled] = '>';
+    }
+    let bar: String = cells.into_iter().collect();
+    let mut text = format!(" [{bar}] {}", progress_label(progress).trim());
+    if text.chars().count() > width {
+        text = text.chars().take(width).collect();
+    }
+    frame.render_widget(
+        Paragraph::new(Line::from(Span::styled(
+            text,
+            Style::default().add_modifier(Modifier::BOLD),
+        ))),
+        area,
+    );
+}
+
 fn draw_operation_log(frame: &mut Frame, operation: &Operation, area: Rect) {
     let visible = area.height as usize;
     let start = operation.lines.len().saturating_sub(visible);
@@ -229,9 +248,9 @@ fn draw_operation_log(frame: &mut Frame, operation: &Operation, area: Rect) {
         .iter()
         .map(|(text, error)| {
             let style = if *error {
-                Style::default().fg(RED)
+                Style::default().add_modifier(Modifier::BOLD)
             } else {
-                Style::default().fg(FG)
+                Style::default()
             };
             Line::from(Span::styled(
                 format!(

@@ -293,7 +293,7 @@ fn draw_system_actions(frame: &mut Frame, app: &App, area: Rect) {
     if let Some(selected) = SYSTEM_ACTIONS.get(app.system_action_index) {
         lines.push(Line::from(Span::styled(
             selected.description(),
-            Style::default().fg(DIM),
+            Style::default().add_modifier(Modifier::DIM),
         )));
     }
     frame.render_widget(
@@ -312,26 +312,29 @@ fn action_line(action: SystemAction, selected: bool, width: usize) -> Line<'stat
     };
     let marker = if selected { "▸ " } else { "  " };
     let title_style = if selected {
-        Style::default().fg(ACCENT).add_modifier(Modifier::BOLD)
+        Style::default().add_modifier(Modifier::BOLD)
     } else {
-        Style::default().fg(FG)
+        Style::default()
     };
     let title_width = width.saturating_sub(24).max(16);
     let mut line = Line::from(vec![
-        Span::styled(marker, Style::default().fg(ACCENT)),
+        Span::styled(marker, Style::default()),
         Span::styled(format!("{title:<title_width$}"), title_style),
-        Span::styled(description, Style::default().fg(FAINT)),
+        Span::styled(description, Style::default().add_modifier(Modifier::DIM)),
     ]);
     if selected {
-        line = line.style(Style::default().bg(ui::PANEL_HIGHLIGHT));
+        line = line.style(Style::default().add_modifier(Modifier::BOLD));
     }
     line
 }
 
 fn kv(key: &str, value: &str) -> Line<'static> {
     Line::from(vec![
-        Span::styled(format!("{key:<15}"), Style::default().fg(DIM)),
-        Span::styled(": ", Style::default().fg(FAINT)),
-        Span::styled(value.to_string(), Style::default().fg(FG)),
+        Span::styled(
+            format!("{key:<15}"),
+            Style::default().add_modifier(Modifier::DIM),
+        ),
+        Span::styled(": ", Style::default().add_modifier(Modifier::DIM)),
+        Span::styled(value.to_string(), Style::default()),
     ])
 }

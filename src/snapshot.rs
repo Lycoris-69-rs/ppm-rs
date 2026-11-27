@@ -278,8 +278,8 @@ fn buffer_to_html(buffer: &Buffer) -> String {
     let mut html = String::new();
     html.push_str(
         "<!doctype html><html><head><meta charset=\"utf-8\"><style>\n\
-html,body{margin:0;padding:0;background:#0d0f16;}\n\
-pre{margin:0;padding:20px;white-space:pre;font-family:\"CaskaydiaMono Nerd Font\",\"Caskaydia Mono Nerd Font\",monospace;font-size:16px;line-height:18px;color:#dbe2f0;}\n\
+html,body{margin:0;padding:0;background:#ffffff;}\n\
+pre{margin:0;padding:20px;white-space:pre;font-family:\"CaskaydiaMono Nerd Font\",\"Caskaydia Mono Nerd Font\",monospace;font-size:16px;line-height:18px;color:#111111;background:#ffffff;}\n\
 </style></head><body><pre>",
     );
     for y in 0..buffer.area.height {
@@ -324,6 +324,9 @@ fn span_html(symbol: &str, fg: Color, bg: Color, modifier: Modifier) -> String {
     }
     if modifier.contains(Modifier::UNDERLINED) {
         let _ = write!(css, "text-decoration:underline;");
+    }
+    if modifier.contains(Modifier::DIM) {
+        let _ = write!(css, "opacity:0.55;");
     }
     format!("<span style=\"{css}\">{}</span>", escape_html(symbol))
 }

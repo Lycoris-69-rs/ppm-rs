@@ -6,7 +6,7 @@
 │▸ linux                                               7.3.6.arch1-1             ││                                                │
 │  linux-3-finge╔ OPERATION · Downloading 2 package(s) ════════════════════════════════════════════════════════════╗               │
 │  linux-73rc5  ║  ⠹ downloading packages                                                                          ║               │
-│  linux-73rc5-d║ ██  61%  92.0 MiB / 151.2 MiB  ·  11.0 MiB/s  ·  linux-7.3.6.arch1-1-x86_64.pkg.tar.…  (1/2)     ║               │
+│  linux-73rc5-d║  [============>       ] 61%  92.0 MiB / 151.2 MiB  ·  11.0 MiB/s  ·  linux-7.3.6.arch1-1-x86_64. ║               │
 │  linux-73rc5-h║  $ pacman -Spdd --noconfirm linux                                                                ║es             │
 │  linux-73rc6  ║  saved /home/user/ppm-rs/downloads/linux-7.3.6.arch1-1-x86_64.pkg.tar.zst                        ║               │
 │  linux-73rc6-d║                                                                                                  ║               │

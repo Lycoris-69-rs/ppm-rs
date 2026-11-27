@@ -1,4 +1,8 @@
 //! Rendering: a small design system shared by every screen.
+//!
+//! PPM is deliberately monochrome: the palette below maps every colour role to
+//! the terminal's *default* foreground/background, and no widget paints a
+//! background. Hierarchy comes from bold/dim modifiers and from glyphs only.
 
 pub mod browse;
 pub mod info;
@@ -14,18 +18,29 @@ use ratatui::widgets::{Block, BorderType, Borders, Paragraph};
 
 use crate::app::{App, BrowseMode, Screen};
 
-pub const BG: Color = Color::Rgb(13, 15, 22);
-pub const PANEL: Color = Color::Rgb(20, 24, 34);
-pub const PANEL_HIGHLIGHT: Color = Color::Rgb(32, 40, 58);
-pub const ACCENT: Color = Color::Rgb(72, 224, 206);
-pub const ACCENT2: Color = Color::Rgb(190, 146, 255);
-pub const FG: Color = Color::Rgb(219, 226, 240);
-pub const DIM: Color = Color::Rgb(118, 130, 156);
-pub const FAINT: Color = Color::Rgb(74, 84, 105);
-pub const GREEN: Color = Color::Rgb(116, 226, 148);
-pub const YELLOW: Color = Color::Rgb(242, 201, 108);
-pub const RED: Color = Color::Rgb(244, 116, 116);
-pub const BLUE: Color = Color::Rgb(120, 176, 255);
+// Every role resolves to the terminal default: no colours, no fills.
+pub const BG: Color = Color::Reset;
+pub const PANEL: Color = Color::Reset;
+pub const PANEL_HIGHLIGHT: Color = Color::Reset;
+pub const ACCENT: Color = Color::Reset;
+pub const ACCENT2: Color = Color::Reset;
+pub const FG: Color = Color::Reset;
+pub const DIM: Color = Color::Reset;
+pub const FAINT: Color = Color::Reset;
+pub const GREEN: Color = Color::Reset;
+pub const YELLOW: Color = Color::Reset;
+pub const RED: Color = Color::Reset;
+pub const BLUE: Color = Color::Reset;
+
+/// Bold text — the only emphasis used by the interface.
+pub fn emphasis() -> Style {
+    Style::default().add_modifier(Modifier::BOLD)
+}
+
+/// De-emphasised (dim) text for hints and secondary metadata.
+pub fn secondary() -> Style {
+    Style::default().add_modifier(Modifier::DIM)
+}
 
 pub const SPINNER: [&str; 10] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
@@ -34,7 +49,7 @@ pub fn spinner(app: &App) -> &'static str {
 }
 
 pub fn base_style() -> Style {
-    Style::default().bg(BG).fg(FG)
+    Style::default()
 }
 
 pub fn panel_block(title: impl Into<Line<'static>>) -> Block<'static> {
@@ -48,7 +63,7 @@ pub fn panel_block(title: impl Into<Line<'static>>) -> Block<'static> {
 }
 
 pub fn dim_style() -> Style {
-    Style::default().fg(DIM)
+    Style::default().add_modifier(Modifier::DIM)
 }
 
 pub fn key_hint(key: &'static str, description: &'static str) -> Vec<Span<'static>> {
@@ -132,9 +147,7 @@ pub fn draw_footer(
         height: 1,
     };
     frame.render_widget(
-        Paragraph::new(hints)
-            .style(Style::default().bg(PANEL))
-            .alignment(ratatui::layout::Alignment::Left),
+        Paragraph::new(hints).alignment(ratatui::layout::Alignment::Left),
         Rect {
             y: rows[0].y,
             height: 1,

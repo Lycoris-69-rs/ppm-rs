@@ -10,8 +10,8 @@ use ratatui::widgets::{Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarStat
 use crate::app::{App, BrowseMode, Row};
 use crate::model::Status;
 use crate::ui::{
-    self, ACCENT, ACCENT2, BG, BLUE, DIM, FAINT, FG, GREEN, PANEL_HIGHLIGHT, YELLOW, footer_hints,
-    mode_hints, panel_block, spinner, thousands,
+    self, ACCENT, ACCENT2, BLUE, DIM, FAINT, FG, GREEN, YELLOW, footer_hints, mode_hints,
+    panel_block, spinner, thousands,
 };
 
 const VERSION_WIDTH: usize = 14;
@@ -65,11 +65,11 @@ fn draw_header(frame: &mut Frame, app: &App, area: Rect) {
                 thousands(app.browse.filtered.len()),
                 thousands(app.browse.rows.len())
             ),
-            Style::default().fg(DIM),
+            Style::default().add_modifier(Modifier::DIM),
         ),
     ]);
     frame.render_widget(
-        Paragraph::new(left).style(Style::default().bg(BG)),
+        Paragraph::new(left).style(Style::default()),
         Rect { height: 1, ..area },
     );
 
@@ -94,7 +94,7 @@ fn draw_header(frame: &mut Frame, app: &App, area: Rect) {
     }
     frame.render_widget(
         Paragraph::new(Line::from(right))
-            .style(Style::default().bg(BG))
+            .style(Style::default())
             .alignment(Alignment::Right),
         Rect { height: 1, ..area },
     );
@@ -108,7 +108,7 @@ fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
     if app.browse.filter.is_empty() {
         spans.push(Span::styled(
             app.browse.mode.search_hint().to_string(),
-            Style::default().fg(FAINT),
+            Style::default().add_modifier(Modifier::DIM),
         ));
     } else {
         spans.push(Span::styled(
@@ -126,7 +126,7 @@ fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
         Style::default().fg(ACCENT).add_modifier(Modifier::BOLD),
     ));
     frame.render_widget(
-        Paragraph::new(Line::from(spans)).style(Style::default().bg(BG)),
+        Paragraph::new(Line::from(spans)).style(Style::default()),
         Rect { height: 1, ..area },
     );
 
@@ -136,9 +136,11 @@ fn draw_search(frame: &mut Frame, app: &App, area: Rect) {
         format!("{} matches ", thousands(app.browse.filtered.len()))
     };
     frame.render_widget(
-        Paragraph::new(Line::from(Span::styled(hint, Style::default().fg(DIM))))
-            .style(Style::default().bg(BG))
-            .alignment(Alignment::Right),
+        Paragraph::new(Line::from(Span::styled(
+            hint,
+            Style::default().add_modifier(Modifier::DIM),
+        )))
+        .alignment(Alignment::Right),
         Rect { height: 1, ..area },
     );
 }
@@ -149,7 +151,7 @@ fn draw_separator(frame: &mut Frame, area: Rect) {
             "─".repeat(area.width as usize),
             Style::default().fg(FAINT),
         )))
-        .style(Style::default().bg(BG)),
+        .style(Style::default()),
         area,
     );
 }
@@ -208,9 +210,11 @@ fn draw_list(frame: &mut Frame, app: &mut App, area: Rect) {
             format!("No package matches “{}”.", app.browse.filter)
         };
         frame.render_widget(
-            Paragraph::new(Line::from(Span::styled(message, Style::default().fg(DIM))))
-                .style(Style::default().bg(ui::PANEL))
-                .alignment(Alignment::Center),
+            Paragraph::new(Line::from(Span::styled(
+                message,
+                Style::default().add_modifier(Modifier::DIM),
+            )))
+            .alignment(Alignment::Center),
             Rect {
                 y: body.y + body.height / 3,
                 height: 1,
@@ -306,7 +310,7 @@ fn row_line(app: &App, row: &Row, selected: bool, marked: bool, width: u16) -> L
         ui::source_tag(row.source),
         Span::styled(
             format!("{:>VERSION_WIDTH$}", fit_right(&version, VERSION_WIDTH)),
-            Style::default().fg(DIM),
+            Style::default().add_modifier(Modifier::DIM),
         ),
         Span::styled(
             format!(" {:>STATE_WIDTH$}", state_label),
@@ -314,7 +318,7 @@ fn row_line(app: &App, row: &Row, selected: bool, marked: bool, width: u16) -> L
         ),
     ]);
     if selected {
-        line = line.style(Style::default().bg(PANEL_HIGHLIGHT));
+        line = line.style(Style::default().add_modifier(Modifier::BOLD));
     }
     line
 }

@@ -9,7 +9,7 @@ use ratatui::widgets::Paragraph;
 use crate::app::{App, InfoState, Row, RowKind};
 use crate::model::{Source, Status, format_bytes};
 use crate::ui::{
-    self, ACCENT2, BLUE, DIM, FAINT, FG, GREEN, RED, YELLOW, panel_block, spinner, thousands,
+    self, ACCENT2, BLUE, DIM, FG, GREEN, RED, YELLOW, panel_block, spinner, thousands,
 };
 
 const KEY_WIDTH: usize = 14;
@@ -82,7 +82,7 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
             "Reinstalling this tarball downgrades the package.",
-            Style::default().fg(DIM),
+            Style::default().add_modifier(Modifier::DIM),
         )));
         return lines;
     }
@@ -208,9 +208,12 @@ fn build_lines(app: &App, row: &Row, width: usize) -> Vec<Line<'static>> {
 fn kv(key: &str, value: &str, width: usize) -> Line<'static> {
     let available = width.saturating_sub(VALUE_INDENT).max(8);
     Line::from(vec![
-        Span::styled(format!("{key:<KEY_WIDTH$}"), Style::default().fg(DIM)),
-        Span::styled(": ", Style::default().fg(FAINT)),
-        Span::styled(truncate(value, available), Style::default().fg(FG)),
+        Span::styled(
+            format!("{key:<KEY_WIDTH$}"),
+            Style::default().add_modifier(Modifier::DIM),
+        ),
+        Span::styled(": ", Style::default().add_modifier(Modifier::DIM)),
+        Span::styled(truncate(value, available), Style::default()),
     ])
 }
 
@@ -221,14 +224,17 @@ fn kv_wrapped(key: &str, value: &str, width: usize, max_lines: usize) -> Vec<Lin
     for (index, chunk) in chunks.into_iter().enumerate() {
         if index == 0 {
             lines.push(Line::from(vec![
-                Span::styled(format!("{key:<KEY_WIDTH$}"), Style::default().fg(DIM)),
-                Span::styled(": ", Style::default().fg(FAINT)),
-                Span::styled(chunk, Style::default().fg(FG)),
+                Span::styled(
+                    format!("{key:<KEY_WIDTH$}"),
+                    Style::default().add_modifier(Modifier::DIM),
+                ),
+                Span::styled(": ", Style::default().add_modifier(Modifier::DIM)),
+                Span::styled(chunk, Style::default()),
             ]));
         } else {
             lines.push(Line::from(vec![
                 Span::styled(" ".repeat(VALUE_INDENT), Style::default()),
-                Span::styled(chunk, Style::default().fg(FG)),
+                Span::styled(chunk, Style::default()),
             ]));
         }
     }
